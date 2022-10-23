@@ -74,7 +74,7 @@ local PROFESSION_INITS = {}	-- Professions initialization functions.
 -- Database tables
 ------------------------------------------------------------------------------
 local AllSpecialtiesTable = {}
-local SpecialtyTable
+local SpecialtyTable = {}
 
 -- Set up the private intra-file namespace.
 local private	= select(2, ...)
@@ -519,7 +519,6 @@ function addon:OnInitialize()
 						      MainPanel:Hide()
 					      else
 						      addon:Scan(false)
-						      addon:AddWaypoint()
 					      end
 				      end
 			      end)
@@ -1542,7 +1541,7 @@ do
 		local specialty = SpecialtyTable[current_prof]
 
 		for index = 1, 25, 1 do
-			local spellName = GetSpellName(index, BOOKTYPE_SPELL)
+			local spellName = GetSpellBookItemName(index, BOOKTYPE_SPELL)
 
 			if not spellName or index == 25 then
 				Player["Specialty"] = nil
@@ -1717,7 +1716,7 @@ end
 --- @param text The text to be dumped
 --------------------------------------------------------------------------------
 do
-	local copy_frame = CreateFrame("Frame", "ARLCopyFrame", UIParent)
+	local copy_frame = CreateFrame("Frame", "ARLCopyFrame", UIParent, "BackdropTemplate")
 	copy_frame:SetBackdrop({
 				       bgFile = [[Interface\DialogFrame\UI-DialogBox-Background]],
 				       edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]],

@@ -1,0 +1,13 @@
+{
+    "Lua.diagnostics.globals": [
+        "GetSpellBookItemName",
+        "BOOKTYPE_SPELL",
+        "LibStub",
+        "GetSpellInfo",
+        "GameTooltip"
+    ],
+    "Lua.diagnostics.disable": [
+        "redundant-parameter",
+        "deprecated"
+    ]
+}

@@ -235,8 +235,8 @@ function GearScoreClassScan(Name)
 		local tooltip = LibQTip:Acquire("GearScoreTooltip", 2, "RIGHT", "LEFT")
 		tooltip:SetCallback("OnMouseUp", GearScore_DatabaseOnClick)
 		GS_DatabaseFrame.tooltip = tooltip
-		tooltip:SetPoint("TOPLEFT", GS_DisplayFrame, 30, -180)
-		tooltip:SetPoint("TOPRIGHT", GS_DisplayFrame, -370, -180)
+		-- tooltip:SetPoint("TOPLEFT", GS_DisplayFrame, 30, -180)
+		-- tooltip:SetPoint("TOPRIGHT", GS_DisplayFrame, -370, -180)
  	   	tooltip:SetFrameStrata("DIALOG")
 		tooltip:SetAlpha(100)
 		tooltip:SetScale(1)
@@ -247,7 +247,7 @@ function GearScoreClassScan(Name)
 			if GearScoreClassStats[i] then PlayersSumBonuses[i] = PlayersSumBonuses[i] * GearScoreClassStats[i]; else PlayersSumBonuses[i] = nil; end
 			if ( PlayersSumBonuses[i] ) then SumTotalStats = SumTotalStats + PlayersSumBonuses[i];end
 		end
-		tooltip:UpdateScrolling(180)
+		-- tooltip:UpdateScrolling(180)
 		tooltip:SetHeight(180)
 		if not GS_ExPFrame:IsVisible() then tooltip:Show(); end
 		

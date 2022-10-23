@@ -71,7 +71,6 @@ Constants.lua
 
 core.lua
 Config.lua
-Waypoint.lua
 Scanner.lua
 Player.lua
 

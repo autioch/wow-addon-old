@@ -63,7 +63,7 @@ local GenericCreateButton = private.GenericCreateButton
 -------------------------------------------------------------------------------
 function private.InitializeListFrame()
 	local MainPanel	= addon.Frame
-	local ListFrame = CreateFrame("Frame", nil, MainPanel)
+	local ListFrame = CreateFrame("Frame", nil, MainPanel, "BackdropTemplate")
 
 	MainPanel.list_frame = ListFrame
 
@@ -212,7 +212,6 @@ function private.InitializeListFrame()
 		-- First, check if this is a "modified" click, and react appropriately
 		if clicked_line.recipe_id and _G.IsModifierKeyDown() then
 			if _G.IsControlKeyDown() and _G.IsShiftKeyDown() then
-				addon:AddWaypoint(clicked_line.recipe_id, clicked_line.acquire_id, clicked_line.location_id, clicked_line.npc_id)
 			elseif _G.IsShiftKeyDown() then
 				local itemID = private.recipe_list[clicked_line.recipe_id].item_id
 
@@ -1551,9 +1550,9 @@ do
 		end
 
 		-- Set the spell tooltip's scale, and copy its other values from GameTooltip so AddOns which modify it will work.
-		spell_tip:SetBackdrop(GameTooltip:GetBackdrop())
-		spell_tip:SetBackdropColor(GameTooltip:GetBackdropColor())
-		spell_tip:SetBackdropBorderColor(GameTooltip:GetBackdropBorderColor())
+		-- spell_tip:SetBackdrop(GameTooltip:GetBackdrop())
+		-- spell_tip:SetBackdropColor(GameTooltip:GetBackdropColor())
+		-- spell_tip:SetBackdropBorderColor(GameTooltip:GetBackdropBorderColor())
 		spell_tip:SetScale(addon.db.profile.tooltip.scale)
 		spell_tip:SetClampedToScreen(true)
 		spell_tip:SetHyperlink(link)

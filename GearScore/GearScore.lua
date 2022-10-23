@@ -68,8 +68,8 @@ function GearScore_OnEvent(GS_Nil, GS_EventName, GS_Prefix, GS_AddonMessage, GS_
 
     if ( GS_EventName == "INSPECT_ACHIEVEMENT_READY" ) then
      	GearScoreCalculateEXP()
-     	if ( GS_DisplayFrame:IsVisible() ) then GS_DisplayXP(UnitName("target")); --GearScoreClassScan(UnitName("target"));
-     	 end
+     	-- if ( GS_DisplayFrame:IsVisible() ) then GS_DisplayXP(UnitName("target")); --GearScoreClassScan(UnitName("target"));
+     	--  end
     end
 
 	if ( GS_EventName == "PLAYER_EQUIPMENT_CHANGED" ) then
@@ -83,16 +83,16 @@ function GearScore_OnEvent(GS_Nil, GS_EventName, GS_Prefix, GS_AddonMessage, GS_
   	end
 	if ( GS_EventName == "PLAYER_TARGET_CHANGED" ) then
 		if UnitName("target") then 	GS_Data[GetRealmName()]["CurrentPlayer"] = {}; end
-		if ( GS_DisplayFrame:IsVisible() ) then
-			if UnitName("target") then  
-				if CanInspect("target") then NotifyInspect("target"); GearScore_GetScore(UnitName("target"), "target"); end
-				--ClearAchievementComparisonUnit(); SetAchievementComparisonUnit("target")				
-				--GearScore_DisplayUnit(UnitName("target"), 1); 
+		-- if ( GS_DisplayFrame:IsVisible() ) then
+		-- 	-- if UnitName("target") then  
+		-- 	-- 	-- if CanInspect("target") then NotifyInspect("target"); GearScore_GetScore(UnitName("target"), "target"); end
+		-- 	-- 	--ClearAchievementComparisonUnit(); SetAchievementComparisonUnit("target")				
+		-- 	-- 	--GearScore_DisplayUnit(UnitName("target"), 1); 
 				
-				GS_ExPFrameUpdateCounter = 0;
-				GS_SCANSET(UnitName("target"));
-			end			
-		end
+		-- 	-- 	GS_ExPFrameUpdateCounter = 0;
+		-- 	-- 	GS_SCANSET(UnitName("target"));
+		-- 	-- end			
+		-- end
 			GS_Data["CurrentTarget"] = {}
 			for i = 1, 18 do
 				GS_Data["CurrentTarget"][i] = GetInventoryItemLink("target", i)
@@ -125,7 +125,7 @@ function GearScore_OnEvent(GS_Nil, GS_EventName, GS_Prefix, GS_AddonMessage, GS_
 					local TestAuthenticity = GearScore_ComposeRecord(tbl, GS_Sender)
 					if TestAuthenticity then return end
 					if ( UnitName("mouseover") == tbl[1] ) then GameTooltip:SetUnit(tbl[1]); end
-					if ( GS_DisplayPlayer == tbl[1] ) and ( GS_DisplayFrame:IsVisible() ) then GearScore_DisplayUnit(tbl[1], 1); end
+					-- if ( GS_DisplayPlayer == tbl[1] ) and ( GS_DisplayFrame:IsVisible() ) then GearScore_DisplayUnit(tbl[1], 1); end
 					if ( ( GS_Factions[GS_Data[GetRealmName()].Players[tbl[1]].Faction] ~= UnitFactionGroup("player") ) and ( GS_Settings["KeepFaction"] == -1 ) ) or ( ( GS_Data[GetRealmName()].Players[tbl[1]].Level < GS_Settings["MinLevel"] ) and ( tbl[1] ~= UnitName("player") ) ) then GS_Data[GetRealmName()].Players[tbl[1]] = nil; end
 					if ( (type(tonumber(tbl[10]))) == "number" ) then GS_Data[GetRealmName()].Players[tbl[1]] = nil; end
 					return
@@ -140,7 +140,7 @@ function GearScore_OnEvent(GS_Nil, GS_EventName, GS_Prefix, GS_AddonMessage, GS_
 					local TestAuthenticity = GearScore_ComposeRecord(tbl, GS_Sender)
 					if TestAuthenticity then return end
 					local CurrentRecord = GS_Data[GetRealmName()].Players[tbl[1]]
-					if ( GS_DisplayPlayer == tbl[1] ) and ( GS_DisplayFrame:IsVisible() ) then GearScore_DisplayUnit(tbl[1], 1); end
+					-- if ( GS_DisplayPlayer == tbl[1] ) and ( GS_DisplayFrame:IsVisible() ) then GearScore_DisplayUnit(tbl[1], 1); end
                     if ( ( GS_Factions[GS_Data[GetRealmName()].Players[tbl[1]].Faction] ~= UnitFactionGroup("player") ) and ( GS_Settings["KeepFaction"] == -1 ) ) or ( ( GS_Data[GetRealmName()].Players[tbl[1]].Level < GS_Settings["MinLevel"] ) and ( tbl[1] ~= UnitName("player") ) ) then GS_Data[GetRealmName()].Players[tbl[1]] = nil; end
 					if ( (type(tonumber(tbl[10]))) == "number" ) then GS_Data[GetRealmName()].Players[tbl[1]] = nil; end
 					return
@@ -158,32 +158,12 @@ function GearScore_OnEvent(GS_Nil, GS_EventName, GS_Prefix, GS_AddonMessage, GS_
   			GS_Settings["Developer"] = 0; GS_VersionNum = 30119; GS_Settings["OldVer"] = GS_VersionNum
   			for i, v in pairs(GS_DefaultSettings) do if not ( GS_Settings[i] ) then GS_Settings[i] = GS_DefaultSettings[i]; end; end
   			if ( GS_Settings["AutoPrune"] == 1 ) then GearScore_Prune(); end
-			if ( GS_Settings["Developer"] == 0 ) then print("Welcome to GearScore 3.1.20. Type /gs to visit options and turn off help."); end
-			print("|cffFF1E00GearScore:|r There is currently a bug in which the UI will stop responding to inspection requests. This is not a bug caused by GearScore, but is a bug in the client. Blizzard is aware of the bug and a fix should be implimented shortly.");
-			if ( GS_Settings["Developer"] == 1 ) then print("Welcome to GearScore 3.1.20. This is a test version. Please provide feedback at www.GearScoreAddon.com"); end
-  			if ( GS_Settings["Restrict"] == 1 ) then GearScore_SetNone(); end
+			if ( GS_Settings["Restrict"] == 1 ) then GearScore_SetNone(); end
   			if ( GS_Settings["Restrict"] == 2 ) then GearScore_SetLight(); end
   			if ( GS_Settings["Restrict"] == 3 ) then GearScore_SetHeavy(); end
   			if ( GetGuildInfo("player") ) then GuildRoster(); end
   			GearScore_GetScore(UnitName("player"), "player"); GearScore_Send(UnitName("player"), "ALL")
-       	  	if ( GetGuildInfo("player") ) and ( GS_Settings["Developer"] ~= 1 )then SendAddonMessage( "GSY_Version", GS_Settings["OldVer"], "GUILD"); end
---       	  	if ( GetBuildInfo() == "4.0.3") then 
---       	  		print("ERROR: This version of GearScore is incompatible with Cataclysm. Please update at www.GearScoreAddon.com"); 
---       	  		GS_DisplayFrame = nil;
---       	  		GS_Settings = nil;
---       	  		GS_Database = nil;
---       	  	end;
         end
-        if ( GS_Prefix == "GearScoreRecount" ) then
-            local f = CreateFrame("Frame", "GearScoreRecountErrorFrame", UIParent);
-            f:CreateFontString("GearScoreRecountWarning")
-			f:SetFrameStrata("TOOLTIP")
-			local s = GearScoreRecountWarning; s:SetFont("Fonts\\FRIZQT__.TTF", 30); s:SetText("WARNING! GearScoreRecount MUST be disabled to use GearScore. 3.1.x")
-			s:SetPoint("BOTTOMLEFT",UIParent,"CENTER",-600,200)
-			s:Show();f:Show()
-			print("WARNING! GearScoreRecount MUST be disabled to use GearScore. Please turn it off or remove it from your addons folder, Sorry for the inconvience")
-			--error("WARNING! GearScoreRecount MUST be disabled to use GearScore. Please turn it off or remove it from your addons folder, Sorry for the inconvience")
-   		end
 		
 	end
 end
@@ -397,7 +377,8 @@ function GearScore_Request(GS_Target)
 	if not ( GearScoreChatMessageThrottle ) then GearScoreChatMessageThrottle = 0; end
     if ( GearScoreChatMessageThrottle >= 5 ) then return; end
 	if ( GS_Settings["Communication"] == 1 ) then
-		    if ( GetGuildInfo("player") ) then SendAddonMessage( "GSY_Request", GS_Target, "GUILD"); --SendAddonMessage( "GSY_Version", GS_Settings["OldVer"], "GUILD"); 
+		if (GetGuildInfo("player")) then C_ChatInfo.SendAddonMessage("GSY_Request", GS_Target, "GUILD");
+
 		    end
 	end
 end
@@ -435,11 +416,14 @@ function GearScore_Send(Name, Group, Target)
 			if not ( GS_Length ) then return; end
 		if ( GS_Length ) and ( GS_Length < 252 ) then
 		    if ( Group == "ALL" ) then
-				if ( GetGuildInfo("player") ) then SendAddonMessage( "GSY", GS_MessageA..GS_MessageB..GS_MessageC..GS_MessageD, "Guild"); end
-				SendAddonMessage( "GSY", GS_MessageA..GS_MessageB..GS_MessageC..GS_MessageD, "RAID")
+				if (GetGuildInfo("player")) then C_ChatInfo.SendAddonMessage("GSY",
+					GS_MessageA .. GS_MessageB .. GS_MessageC .. GS_MessageD, "Guild"); end
+
+				C_ChatInfo.SendAddonMessage("GSY", GS_MessageA .. GS_MessageB .. GS_MessageC .. GS_MessageD, "RAID")
+
 			else
 			    if ( Group == "GUILD" ) and not ( GetGuildInfo("player") ) then return; end
-				SendAddonMessage( "GSY", GS_MessageA..GS_MessageB..GS_MessageC..GS_MessageD, Group, Target)
+				C_ChatInfo.SendAddonMessage( "GSY", GS_MessageA..GS_MessageB..GS_MessageC..GS_MessageD, Group, Target)
 			end
 		end
 	end
@@ -519,15 +503,7 @@ end
 
 ---------------------------- Get TimeStamp ------------------------------------
 function GearScore_GetTimeStamp()
-	local GS_Hour, GS_Minute = GetGameTime(); local monthago = 0
-	local GS_Weekday, GS_Month, GS_Day, GS_Year = CalendarGetDate()
-	local GS_TimeStamp = (GS_Year * 100000000) + (GS_Month * 1000000) + (GS_Day * 10000) + (GS_Hour * 100) + (GS_Minute)
-	if ( GS_Month == 1 ) then
-		monthago = ( ( GS_Year - 1 ) *100000000 ) + ( 12 * 1000000 ) + (GS_Day * 10000) + (GS_Hour * 100) + (GS_Minute)
-	else
-		monthago = (GS_Year * 100000000) + ((GS_Month - 1) * 1000000) + (GS_Day * 10000) + (GS_Hour * 100) + (GS_Minute)
-	end
-	return GS_TimeStamp, monthago
+	return 1, 1
 end
 -------------------------------------------------------------------------------
 
@@ -558,7 +534,7 @@ function GearScore_HookSetUnit(arg1, arg2)
     local Realm = ""; if UnitName("mouseover") == Name then _, Realm = UnitName("mouseover"); if not Realm then Realm = GetRealmName(); end; end
 	if ( CanInspect("mouseover") ) and ( UnitName("mouseover") == Name ) and not ( GS_PlayerIsInCombat ) and ( UnitIsUnit("target", "mouseover") ) then 
 		Age = "";
-		if (GS_DisplayFrame:IsVisible()) and GS_DisplayPlayer and UnitName("target") then if GS_DisplayPlayer == UnitName("target") then return; end; end			
+		-- if (GS_DisplayFrame:IsVisible()) and GS_DisplayPlayer and UnitName("target") then if GS_DisplayPlayer == UnitName("target") then return; end; end			
 		if ( GS_Data[GetRealmName()].Players[Name] ) then PreviousRecord = GS_Data[GetRealmName()].Players[Name]; end 
 		NotifyInspect("mouseover"); GearScore_GetScore(Name, "mouseover"); --GS_Data[GetRealmName()]["CurrentPlayer"] = GS_Data[GetRealmName()]["Players"][Name]
 		if not ( GearScore_IsRecordTheSame(GS_Data[GetRealmName()].Players[Name], PreviousRecord) ) then GearScore_Send(Name, "ALL"); end
@@ -737,7 +713,6 @@ function GearScore_OnEnter(Name, ItemSlot, Argument)
 end
 function MyPaperDoll()
 	GearScore_GetScore(UnitName("player"), "player"); GearScore_Send(UnitName("player"), "ALL"); 
-	--SendAddonMessage( "GSY_Version", GS_Settings["OldVer"], "GUILD")
 	local Red, Blue, Green = GearScore_GetQuality(GS_Data[GetRealmName()].Players[UnitName("player")].GearScore)
     PersonalGearScore:SetText(GS_Data[GetRealmName()].Players[UnitName("player")].GearScore); PersonalGearScore:SetTextColor(Red, Green, Blue, 1)
 end
@@ -815,11 +790,6 @@ function GS_MANSET(Command)
        if tbl[2] == "end" then GS_ExchangeCount = nil; print("Ending Transmission"); return; end
 	     if  GS_ExchangeDatabase then print("You are already transmitting your database!"); return; end
 
---		if
---	        	tbl[2] = (strupper(string.sub(tbl[2], 1, 1))..strlower(string.sub(tbl[2], 2)))
---				local Message = floor(GearScore_GetTimeStamp()/314159265)
---				print(Message)
---				SendAddonMessage("GSYTRANSMIT", Message, "WHISPER", tbl[2])
 		GearScore_Exchange("DATABASE", tbl[2])
 		return
     end
@@ -828,8 +798,8 @@ function GS_MANSET(Command)
 end
 function GS_SCANSET(Command)
 		if ( GS_OptionsFrame:IsVisible() ) then GearScore_HideOptions(); end		
-		PanelTemplates_SetTab(GS_DisplayFrame, 1)
-		GS_DisplayFrame:Hide();
+		-- PanelTemplates_SetTab(GS_DisplayFrame, 1)
+		-- GS_DisplayFrame:Hide();
 		GS_ExPFrame:Hide();
 		GS_GearFrame:Show(); GS_NotesFrame:Hide(); GS_DefaultFrame:Show(); GS_ExPFrame:Hide()
 		GS_GearScoreText:Show(); GS_LocationText:Show(); GS_DateText:Show(); GS_AverageText: Show();
@@ -870,10 +840,10 @@ function GearScore_DisplayUnit(Name, Auto)
 	local Textures = {}
 --	if ( Race == "Orc" ) then Scale = 0.8; end
     GS_EditBox1:SetText(Name)
-	GS_DisplayFrame:Show()
+	-- GS_DisplayFrame:Show()
 	GS_Model:SetModelScale(1)
     GS_Model:SetCamera(1)
-    GS_Model:SetLight(1, 0, 0, -0.707, -0.707, 0.7, 1.0, 1.0, 1.0, 0.8, 1.0, 1.0, 0.8)
+    -- GS_Model:SetLight(1, 0, 0, -0.707, -0.707, 0.7, 1.0, 1.0, 1.0, 0.8, 1.0, 1.0, 0.8)
 	if Name == UnitName("target") then GS_Model:SetUnit("target"); else GS_Model:SetUnit("player"); end
 	GS_Model:Undress()
  	GS_Model:EnableMouse(1)
@@ -885,7 +855,7 @@ function GearScore_DisplayUnit(Name, Auto)
 	            local ItemName, ItemLink, ItemRarity, ItemLevel, ItemMinLevel, ItemType, ItemSubType, ItemStackCount, ItemEquipLoc, ItemTexture = GetItemInfo("item:"..GS_Data[GetRealmName()].Players[Name].Equip[i])
 				local backdrop = {}
 				if ( ItemLink ) then GS_Model:TryOn(ItemLink); end
-    			if ( ItemTexture ) then backdrop = { bgFile = ItemTexture }; _G["GS_Frame"..i]:SetBackdrop(backdrop); else backdrop = { bgFile = GS_TextureFiles[i] }; _G["GS_Frame"..i]:SetBackdrop(backdrop);end
+    			-- if ( ItemTexture ) then backdrop = { bgFile = ItemTexture }; _G["GS_Frame"..i]:SetBackdrop(backdrop); else backdrop = { bgFile = GS_TextureFiles[i] }; _G["GS_Frame"..i]:SetBackdrop(backdrop);end
 			end
 		end
 	    GS_InfoText:SetText(GS_Data[GetRealmName()].Players[Name].Level.." "..GS_Races[GS_Data[GetRealmName()].Players[Name].Race].." "..GS_Classes[GS_Data[GetRealmName()].Players[Name].Class])
@@ -913,7 +883,7 @@ function GearScore_DisplayUnit(Name, Auto)
 		GS_LocationText:SetText("")
 		GS_GearScoreText:SetText("No Record")
 		local backdrop = {}
-		for i = 1, 18 do if ( i ~=4 ) then backdrop = { bgFile = GS_TextureFiles[i] }; _G["GS_Frame"..i]:SetBackdrop(backdrop); end; end
+		-- for i = 1, 18 do if ( i ~=4 ) then backdrop = { bgFile = GS_TextureFiles[i] }; _G["GS_Frame"..i]:SetBackdrop(backdrop); end; end
 		--GS_Slot1:Hide(); GS_Slot2:Hide(); GS_Slot3:Hide(); GS_Slot5:Hide(); GS_Slot6:Hide(); GS_Slot7:Hide(); GS_Slot8:Hide(); GS_Slot9:Hide(); GS_Slot10:Hide(); GS_Slot11:Hide(); GS_Slot12:Hide(); GS_Slot13:Hide(); GS_Slot14:Hide(); GS_Slot15:Hide(); GS_Slot16:Hide(); GS_Slot17:Hide(); GS_Slot18:Hide()
 	end
 
@@ -937,36 +907,36 @@ function GearScore_DisplayUnit(Name, Auto)
 end
 
 function GearScore_ShowOptions()
-	GS_OptionalDisplayed = 	GS_Displayed
-	GS_Displayed = nil
-	if ( GS_Settings["Restrict"] == 1 ) then GS_None:SetChecked(true); GS_Light:SetChecked(false); GS_Heavy:SetChecked(false); end
-	if ( GS_Settings["Restrict"] == 2 ) then GS_Light:SetChecked(true); GS_None:SetChecked(false); GS_Heavy:SetChecked(false);end
-	if ( GS_Settings["Restrict"] == 3 ) then GS_Heavy:SetChecked(true); GS_Light:SetChecked(false); GS_None:SetChecked(false);end
-	if ( GS_Settings["Player"] == 1 ) then GS_ShowPlayerCheck:SetChecked(true); else GS_ShowPlayerCheck:SetChecked(false); end
-	if ( GS_Settings["Item"] == 1 ) then GS_ShowItemCheck:SetChecked(true); else GS_ShowItemCheck:SetChecked(false); end
-	if ( GS_Settings["Detail"] == 1 ) then GS_DetailCheck:SetChecked(true); else GS_DetailCheck:SetChecked(false); end
-	if ( GS_Settings["Level"] == 1 ) then GS_LevelCheck:SetChecked(true); else GS_LevelCheck:SetChecked(false); end
-	if ( GS_Settings["Date2"] == 1 ) then GS_DateCheck:SetChecked(true); else GS_DateCheck:SetChecked(false); end
-	if ( GS_Settings["AutoPrune"] == 1 ) then GS_PruneCheck:SetChecked(true); else GS_PruneCheck:SetChecked(false); end	
-	if ( GS_Settings["ShowHelp"] == 1 ) then GS_HelpCheck:SetChecked(true); else GS_HelpCheck:SetChecked(false); end
-	if ( GS_Settings["KeepFaction"] == 1 ) then GS_FactionCheck:SetChecked(true); else GS_FactionCheck:SetChecked(false); end
-	if ( GS_Settings["ML"] == 1 ) then GS_MasterlootCheck:SetChecked(true); else GS_MasterlootCheck:SetChecked(false); end
-	if ( GS_Settings["CHAT"] == 1 ) then GS_ChatCheck:SetChecked(true); else GS_ChatCheck:SetChecked(false); end
-	GS_DatabaseAgeSliderText:SetText("Keep data for: "..(GS_Settings["DatabaseAgeSlider"] or 30).." days.")
-	GS_DatabaseAgeSlider:SetValue(GS_Settings["DatabaseAgeSlider"] or 30)
-	GS_LevelEditBox:SetText(GS_Settings["MinLevel"])
-	--Set SpecScore Options--
-	local class, englishClass = UnitClass("player")
-	for i = 1,4 do _G["GS_SpecFontString"..i]:Hide(); _G["GS_SpecScoreCheck"..i]:Hide(); end
-    for i, v in ipairs(GearScoreClassSpecList[englishClass]) do
-    _G["GS_SpecFontString"..i]:SetText("Show "..GearScoreClassSpecList[englishClass][i].." SpecScores")
-   		_G["GS_SpecScoreCheck"..i]:SetText(GearScoreClassSpecList[englishClass][i])
-   		_G["GS_SpecFontString"..i]:Show(); _G["GS_SpecScoreCheck"..i]:Show()
-    	if not ( GS_Settings["ShowSpecScores"] ) then GS_Settings["ShowSpecScores"] = {}; end
-    	if not ( GS_Settings["ShowSpecScores"][GearScoreClassSpecList[englishClass][i]] ) then GS_Settings["ShowSpecScores"][GearScoreClassSpecList[englishClass][i]] = 1; end
-    	if ( GS_Settings["ShowSpecScores"][GearScoreClassSpecList[englishClass][i]] == 1 ) then _G["GS_SpecScoreCheck"..i]:SetChecked(1); else _G["GS_SpecScoreCheck"..i]:SetChecked(0); end
-    end
-	
+	-- GS_OptionalDisplayed = 	GS_Displayed
+	-- GS_Displayed = nil
+	-- if ( GS_Settings["Restrict"] == 1 ) then GS_None:SetChecked(true); GS_Light:SetChecked(false); GS_Heavy:SetChecked(false); end
+	-- if ( GS_Settings["Restrict"] == 2 ) then GS_Light:SetChecked(true); GS_None:SetChecked(false); GS_Heavy:SetChecked(false);end
+	-- if ( GS_Settings["Restrict"] == 3 ) then GS_Heavy:SetChecked(true); GS_Light:SetChecked(false); GS_None:SetChecked(false);end
+	-- if ( GS_Settings["Player"] == 1 ) then GS_ShowPlayerCheck:SetChecked(true); else GS_ShowPlayerCheck:SetChecked(false); end
+	-- if ( GS_Settings["Item"] == 1 ) then GS_ShowItemCheck:SetChecked(true); else GS_ShowItemCheck:SetChecked(false); end
+	-- if ( GS_Settings["Detail"] == 1 ) then GS_DetailCheck:SetChecked(true); else GS_DetailCheck:SetChecked(false); end
+	-- if ( GS_Settings["Level"] == 1 ) then GS_LevelCheck:SetChecked(true); else GS_LevelCheck:SetChecked(false); end
+	-- if ( GS_Settings["Date2"] == 1 ) then GS_DateCheck:SetChecked(true); else GS_DateCheck:SetChecked(false); end
+	-- if ( GS_Settings["AutoPrune"] == 1 ) then GS_PruneCheck:SetChecked(true); else GS_PruneCheck:SetChecked(false); end	
+	-- if ( GS_Settings["ShowHelp"] == 1 ) then GS_HelpCheck:SetChecked(true); else GS_HelpCheck:SetChecked(false); end
+	-- if ( GS_Settings["KeepFaction"] == 1 ) then GS_FactionCheck:SetChecked(true); else GS_FactionCheck:SetChecked(false); end
+	-- if ( GS_Settings["ML"] == 1 ) then GS_MasterlootCheck:SetChecked(true); else GS_MasterlootCheck:SetChecked(false); end
+	-- if ( GS_Settings["CHAT"] == 1 ) then GS_ChatCheck:SetChecked(true); else GS_ChatCheck:SetChecked(false); end
+	-- GS_DatabaseAgeSliderText:SetText("Keep data for: "..(GS_Settings["DatabaseAgeSlider"] or 30).." days.")
+	-- GS_DatabaseAgeSlider:SetValue(GS_Settings["DatabaseAgeSlider"] or 30)
+	-- GS_LevelEditBox:SetText(GS_Settings["MinLevel"])
+	-- --Set SpecScore Options--
+	-- local class, englishClass = UnitClass("player")
+	-- for i = 1,4 do _G["GS_SpecFontString"..i]:Hide(); _G["GS_SpecScoreCheck"..i]:Hide(); end
+    -- for i, v in ipairs(GearScoreClassSpecList[englishClass]) do
+    -- _G["GS_SpecFontString"..i]:SetText("Show "..GearScoreClassSpecList[englishClass][i].." SpecScores")
+   	-- 	_G["GS_SpecScoreCheck"..i]:SetText(GearScoreClassSpecList[englishClass][i])
+   	-- 	_G["GS_SpecFontString"..i]:Show(); _G["GS_SpecScoreCheck"..i]:Show()
+    -- 	if not ( GS_Settings["ShowSpecScores"] ) then GS_Settings["ShowSpecScores"] = {}; end
+    -- 	if not ( GS_Settings["ShowSpecScores"][GearScoreClassSpecList[englishClass][i]] ) then GS_Settings["ShowSpecScores"][GearScoreClassSpecList[englishClass][i]] = 1; end
+    -- 	if ( GS_Settings["ShowSpecScores"][GearScoreClassSpecList[englishClass][i]] == 1 ) then _G["GS_SpecScoreCheck"..i]:SetChecked(1); else _G["GS_SpecScoreCheck"..i]:SetChecked(0); end
+    -- end
+	print("dupa");
 	GS_Displayed = 1; GS_OptionsFrame:Show(); GS_GearFrame:Hide(); GS_ExPFrame:Hide()
 end 
  
@@ -1064,7 +1034,10 @@ function GearScore_DisplayDatabase(Group, SortType, Auto, GSX_StartPage)
 	GS_StartPage = GSX_StartPage
 	if not ( GS_StartPage ) or ( GS_StartPage < 0 ) then GS_StartPage = 0; end
 	
-	GS_DisplayedGroup = Group; GS_DisplayFrame:Hide(); 	GS_DatabaseFrame:Show(); GS_DatabaseDisplayed =  1 
+	GS_DisplayedGroup = Group;
+	-- GS_DisplayFrame:Hide(); 	
+	GS_DatabaseFrame:Show(); 
+	GS_DatabaseDisplayed =  1 
 	if not ( SortType ) then SortType = "GearScore"; end
 	GS_SortedType = SortType
 	LibQTip:Release(GS_DatabaseFrame.tooltip)
@@ -1135,7 +1108,7 @@ function GearScore_DisplayDatabase(Group, SortType, Auto, GSX_StartPage)
 	end
 	tooltip:Show()
 	--tooltip:SetColumnColor(GS_HighlightedColNum, 1, 1, 1, .5);
-	tooltip:SetBackdropColor(.1,.1,.2,1)
+	-- tooltip:SetBackdropColor(.1,.1,.2,1)
 end
 
 function GearScore_SetSortingColor(ColNum, AlphaDirection, tooltip)
@@ -1390,8 +1363,6 @@ function GearScoreCalculateEXP()
 		    
 		--	if GS_Data[GetRealmName()].Players[UnitName("mouseover")] then
    			   GS_Data[GetRealmName()]["CurrentPlayer"]["EXP"] = StatString
-				--SendAddonMessage("GSZZZ", StatString, "GUILD")
-				--SendAddonMessage("GSZZZ", StatString, "PARTY")
 	--		end
 	--	end
 
@@ -1498,7 +1469,7 @@ SLASH_MY3SCRIPT1 = "/gscan"
 SLASH_MY3SCRIPT2 = "/gsearch"
 SlashCmdList["MY4SCRIPT"] = GS_BANSET
 SLASH_MY4SCRIPT1 = "/gsban"
-GS_DisplayFrame:Hide()
+-- GS_DisplayFrame:Hide()
 LibQTip = LibStub("LibQTipClick-1.1")
 
 

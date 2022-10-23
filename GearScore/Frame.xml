@@ -1,9 +1,12 @@
 ﻿<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.blizzard.com/wow/ui/">
 
-			<Button name="GS_GearSlotTemplate" virtual = "true" toplevel="true" movable="true" enableMouse="true">
-				<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Head.blp" />
-				<Size><AbsDimension x="32" y="32" /></Size>
-				<Scripts><OnEnter>
+	<Button name="GS_GearSlotTemplate" virtual="true" toplevel="true" movable="true" enableMouse="true">
+		<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Head.blp" />
+		<Size>
+			<AbsDimension x="32" y="32" />
+		</Size>
+		<Scripts>
+			<OnEnter>
 						GameTooltip:SetOwner(self, "ANCHOR_Right")
 						if UnitName("target") and CanInspect("target") and ( GS_DisplayPlayer == UnitName("target") ) then 
 							local class, englishClass = UnitClass("target")
@@ -18,19 +21,17 @@
 							end
 						end
 					</OnEnter>
-					<OnLeave>GameTooltip:Hide()</OnLeave>
-					<OnClick> if ( IsShiftKeyDown() ) then 
+			<OnLeave>GameTooltip:Hide()</OnLeave>
+			<OnClick> if ( IsShiftKeyDown() ) then 
 					local ItemName, ItemLink = GetItemInfo("item:"..GS_Data[GetRealmName()].Players[GS_DisplayPlayer].Equip[self:GetID()]); ChatFrameEditBox:Insert(ItemLink); 
 					end </OnClick>
-				</Scripts>
-			</Button>
+		</Scripts>
+	</Button>
 
 
-
-
-<StatusBar name="GS_XpBarTemplate" virtual = "true" drawLayer="BACKGROUND" minValue="0" maxValue="100" defaultValue="50">
-				<Scripts>
-					<OnEnter>
+	<StatusBar name="GS_XpBarTemplate" virtual="true" drawLayer="BACKGROUND" minValue="0" maxValue="100" defaultValue="50">
+		<Scripts>
+			<OnEnter>
 						local Name = tonumber(string.sub(self:GetName(), 9))
 						local count = 0
 						GameTooltip:SetOwner(self, "ANCHOR_Right")
@@ -60,21 +61,21 @@
 						GameTooltip:Show()
 
 					</OnEnter>
-					<OnLeave>
+			<OnLeave>
 						GameTooltip:Hide()
 					</OnLeave>
-				</Scripts>
-				<Size>
-					<AbsDimension x="181" y="13"/>
-				</Size>
-				<Anchors>
-					<Anchor point="LEFT">
-						<Offset>
-							<AbsDimension x="-100" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-				<Layers>
+		</Scripts>
+		<Size>
+			<AbsDimension x="181" y="13" />
+		</Size>
+		<Anchors>
+			<Anchor point="LEFT">
+				<Offset>
+					<AbsDimension x="-100" y="0" />
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
 			<Layer level="OVERLAY">
 				<FontString name="$parentPercentText" inherits="GameFontNormal" text="OUT OF RANGE / NO TARGET">
 					<Size>
@@ -85,7 +86,7 @@
 							<Offset x="0" y="5" />
 						</Anchor>
 					</Anchors>
-				</FontString> 
+				</FontString>
 				<FontString name="$parentInstaceText" inherits="GameFontNormal" text="" justifyH="Left">
 					<Size>
 						<AbsDimension x="299" y="20" />
@@ -97,31 +98,31 @@
 					</Anchors>
 				</FontString>
 			</Layer>
-					
-					<Layer level="ARTWORK">
-						<Texture name="$parentLeftTexture" file="Interface\AchievementFrame\UI-Achievement-ProgressBar-Border">
-							<Size>
-								<AbsDimension x="216" y="35"/>
-							</Size>
-							<Anchors>
-								<Anchor point="LEFT">
-									<Offset>
-										<AbsDimension x="-3" y="-4"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						
-						</Texture>
+
+			<Layer level="ARTWORK">
+				<Texture name="$parentLeftTexture" file="Interface\AchievementFrame\UI-Achievement-ProgressBar-Border">
+					<Size>
+						<AbsDimension x="216" y="35" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT">
+							<Offset>
+								<AbsDimension x="-3" y="-4" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+
+				</Texture>
 
 
-					</Layer>
-				</Layers>
-				<BarTexture file="Interface\PaperDollInfoFrame\UI-Character-Skills-Bar"/>
-				<BarColor r=".25" g=".25" b=".75"/>
-</StatusBar>
-<StatusBar name="GS_GearCheckBarTemplate" virtual = "true" drawLayer="BACKGROUND" minValue="0" maxValue="100" defaultValue="50">
-				<Scripts>
-					<OnEnter>
+			</Layer>
+		</Layers>
+		<BarTexture file="Interface\PaperDollInfoFrame\UI-Character-Skills-Bar" />
+		<BarColor r=".25" g=".25" b=".75" />
+	</StatusBar>
+	<StatusBar name="GS_GearCheckBarTemplate" virtual="true" drawLayer="BACKGROUND" minValue="0" maxValue="100" defaultValue="50">
+		<Scripts>
+			<OnEnter>
 						local id = tonumber(self:GetID()); local positive = ""
 						local red, green, blue = 0, 0, 0
 						GameTooltip:SetOwner(self, "ANCHOR_Right")
@@ -180,41 +181,74 @@
 
 						
 					</OnEnter>
-					<OnLeave>
+			<OnLeave>
 						GameTooltip:Hide()
 					</OnLeave>
-				</Scripts>
-				<Size><AbsDimension x="181" y="13"/></Size>
-				<Anchors><Anchor point="LEFT"><Offset><AbsDimension x="-100" y="0"/></Offset></Anchor></Anchors>
-				<Layers>
-					<Layer level="OVERLAY">
-					<FontString name="$parentPercentText" inherits="GameFontNormal" text=" ">
-						<Size><AbsDimension x="199" y="20" /></Size><Anchors><Anchor point="TOPLEFT"><Offset x="0" y="5" /></Anchor></Anchors>
-					</FontString> 
-					<FontString name="$parentGearSpecText" inherits="GameFontNormal" text="Restoration" justifyH="Center">
-						<Size><AbsDimension x="299" y="20" /></Size><Anchors><Anchor point="CENTER"><Offset x="0" y="18" /></Anchor></Anchors>
-					</FontString>
-					</Layer>
-					<Layer level="ARTWORK">
-						<Texture name="$parentLeftTexture" file="Interface\AchievementFrame\UI-Achievement-ProgressBar-Border">
-							<Size><AbsDimension x="216" y="35"/></Size>
-							<Anchors><Anchor point="LEFT"><Offset><AbsDimension x="-3" y="-4"/></Offset></Anchor></Anchors>
-						</Texture>
-					</Layer>
-				</Layers>
-				<BarTexture file="Interface\PaperDollInfoFrame\UI-Character-Skills-Bar"/>
-				<BarColor r=".25" g=".25" b=".75"/>
-</StatusBar>
+		</Scripts>
+		<Size>
+			<AbsDimension x="181" y="13" />
+		</Size>
+		<Anchors>
+			<Anchor point="LEFT">
+				<Offset>
+					<AbsDimension x="-100" y="0" />
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentPercentText" inherits="GameFontNormal" text=" ">
+					<Size>
+						<AbsDimension x="199" y="20" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="0" y="5" />
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentGearSpecText" inherits="GameFontNormal" text="Restoration" justifyH="Center">
+					<Size>
+						<AbsDimension x="299" y="20" />
+					</Size>
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset x="0" y="18" />
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentLeftTexture" file="Interface\AchievementFrame\UI-Achievement-ProgressBar-Border">
+					<Size>
+						<AbsDimension x="216" y="35" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT">
+							<Offset>
+								<AbsDimension x="-3" y="-4" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<BarTexture file="Interface\PaperDollInfoFrame\UI-Character-Skills-Bar" />
+		<BarColor r=".25" g=".25" b=".75" />
+	</StatusBar>
 
 
-
-	<Frame name="GearScore_StatsFrame" inherits="StatGroupTemplate" parent="CharacterStatsPaneScrollChild">
-		<Size x="169" y="350"/>
+	<Frame name="GearScore_StatsFrame" inherits="BackdropTemplate">
+		<Size x="169" y="350" />
 		<Scripts>
 			<OnLoad>
+				<!-- First 3 local are added to fix the script -->
 				<![CDATA[
+				local PAPERDOLL_STATCATEGORY_DEFAULTORDER = {};
+				local PAPERDOLL_STATCATEGORIES = {};
+				local PAPERDOLL_STATINFO = {}
 				local id = #PAPERDOLL_STATCATEGORY_DEFAULTORDER + 1;
-				local frame = CreateFrame("Frame", "CharacterStatsPaneCategory"..id, CharacterStatsPaneScrollChild, "StatGroupTemplate");
+				local frame = CreateFrame("Frame", "CharacterStatsPaneCategory"..id, UIParent, "BackdropTemplate");
 				STAT_CATEGORY_GEARSCORE = "GearScore";
 				PAPERDOLL_STATCATEGORIES["GEARSCORE"] = {["id"] = id,stats = {"GS_GEARSCORE"}};
 				tinsert(PAPERDOLL_STATCATEGORY_DEFAULTORDER, 1, "GEARSCORE");
@@ -243,15 +277,13 @@
 			</OnLoad>
 		</Scripts>
 	</Frame>
-	
-	
-	
-	
+
+
 	<Frame name="GS_DisplayFrame" parent="UIParent" toplevel="true" movable="true" enableMouse="true">
 		<Scripts>
 
-	
-		<OnLoad>
+
+			<OnLoad>
 			tinsert(UISpecialFrames, self:GetName());
 
 	self:EnableMouse(true)
@@ -262,20 +294,18 @@
 
 
 	</OnLoad>
-	<OnHide>
+			<OnHide>
 		if ( GS_DatabaseFrame.tooltip ) then GS_DatabaseFrame.tooltip:Hide(); end
 	</OnHide>
-	</Scripts>	
+		</Scripts>
 		<Size>
 			<AbsDimension x="600" y="450" />
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER">
 				<Offset x="0" y="0" />
-				
-				
-				
-				
+
+
 			</Anchor>
 		</Anchors>
 		<Backdrop bgFile="Interface\AchievementFrame\UI-Achievement-StatsBackground" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="false">
@@ -290,46 +320,46 @@
 			</EdgeSize>
 		</Backdrop>
 		<Frames>
-	<Frame name="GS_DefaultFrame" parent="GS_DisplayFrame" toplevel="true" movable="true" enableMouse="true">
-		<Size>
-			<AbsDimension x="350" y="225" />
-		</Size>
-		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame" >
-				<Offset x="0" y="0" />
-			</Anchor>
-		</Anchors>
-		<Frames>
-
-			<EditBox name="GS_EditBox1" inherits="InputBoxTemplate">
+			<Frame name="GS_DefaultFrame" parent="GS_DisplayFrame" toplevel="true" movable="true" enableMouse="true">
 				<Size>
-					<AbsDimension x="120" y="32" />
+					<AbsDimension x="350" y="225" />
 				</Size>
 				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="30" y="-369" />
+					<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+						<Offset x="0" y="0" />
 					</Anchor>
 				</Anchors>
-				<Scripts>
-					<OnEscapePressed>
+				<Frames>
+
+					<EditBox name="GS_EditBox1" inherits="InputBoxTemplate">
+						<Size>
+							<AbsDimension x="120" y="32" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="30" y="-369" />
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnEscapePressed>
 						self:ClearFocus()
 					</OnEscapePressed>
-					<OnEnterPressed>
+							<OnEnterPressed>
 					GearScore_DisplayUnit(strupper(string.sub(GS_EditBox1:GetText(), 1, 1))..strlower(string.sub(GS_EditBox1:GetText(), 2)))
 					</OnEnterPressed>
-				</Scripts>
-			</EditBox>
-			<Button name="GS_SearchButton" inherits="UIPanelButtonTemplate" text="Search">
-				<Size>
-					<AbsDimension x="75" y="23" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="155" y="-373" />
-					</Anchor>
-				</Anchors>
-				<Scripts>
-					<OnClick>
+						</Scripts>
+					</EditBox>
+					<Button name="GS_SearchButton" inherits="UIPanelButtonTemplate" text="Search">
+						<Size>
+							<AbsDimension x="75" y="23" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="155" y="-373" />
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
 						local Command = GS_EditBox1:GetText();
 						GS_SCANSET(Command)
 						--GearScore_DisplayUnit(strupper(string.sub(Command, 1, 1))..strlower(string.sub(Command, 2)))
@@ -337,140 +367,139 @@
 						--GearScore_DisplayUnit(strupper(string.sub(GS_EditBox1:GetText(), 1, 1))..strlower(string.sub(GS_EditBox1:GetText(), 2)))
 						
 					</OnClick>
-				</Scripts>
-			</Button>
+						</Scripts>
+					</Button>
 
 
-
-			<Button name="GS_GroupButton" inherits="UIPanelButtonTemplate" text="Database">
-				<Scripts>
-					<OnClick>
+					<Button name="GS_GroupButton" inherits="UIPanelButtonTemplate" text="Database">
+						<Scripts>
+							<OnClick>
 						GearScore_DisplayDatabase(GS_DisplayedGroup, GS_SortedType, 1, (GS_StartPage))
 					</OnClick>
-				</Scripts>
-				<Size>
-					<AbsDimension x="75" y="23" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="13" y="-407" />
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="GS_DeleteButton" inherits="UIPanelButtonTemplate" text="Delete">
-				<Size>
-					<AbsDimension x="75" y="23" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="92" y="-407" />
-					</Anchor>
-				</Anchors>
-				<Scripts>
-					<OnClick>
+						</Scripts>
+						<Size>
+							<AbsDimension x="75" y="23" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="13" y="-407" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_DeleteButton" inherits="UIPanelButtonTemplate" text="Delete">
+						<Size>
+							<AbsDimension x="75" y="23" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="92" y="-407" />
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
 						GS_Data[GetRealmName()]["Players"][GS_DisplayPlayer] = nil; GearScore_DisplayUnit(GS_DisplayPlayer, 1)
 					</OnClick>
-				</Scripts>
-			</Button>
-			<Button name="GS_InviteButton" inherits="UIPanelButtonTemplate" text="Invite">
-				<Size>
-					<AbsDimension x="75" y="23" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="175" y="-407" />
-					</Anchor>
-				</Anchors>
-				<Scripts>
-					<OnClick>
+						</Scripts>
+					</Button>
+					<Button name="GS_InviteButton" inherits="UIPanelButtonTemplate" text="Invite">
+						<Size>
+							<AbsDimension x="75" y="23" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="175" y="-407" />
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
 						InviteUnit(GS_DisplayPlayer)
 					</OnClick>
-				</Scripts>
-			</Button>
+						</Scripts>
+					</Button>
 
 
-		</Frames>
-			<Layers>
-				<Layer level="OVERLAY">
-				<FontString name="GS_NameText" inherits="GameFontNormal" text="Arxkanite">
-					<Size>
-						<AbsDimension x="199" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="299" y="-15" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="GS_AverageText" inherits="GameFontNormal" text="Average ItemLevel: 213">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="299" y="-381" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="GS_GearScoreText" inherits="GameFontNormal" text="GearScore: 4000">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="299" y="-364" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="GS_LocationText" inherits="GameFontNormal" text="Seen: Blade's Edge Mountains">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="299" y="-398" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="GS_DateText" inherits="GameFontNormal" text="January 10, 2009">
-					<Size>
-						<AbsDimension x="250" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="274" y="-416" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-							
+				</Frames>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="GS_NameText" inherits="GameFontNormal" text="Arxkanite">
+							<Size>
+								<AbsDimension x="199" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="299" y="-15" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GS_AverageText" inherits="GameFontNormal" text="Average ItemLevel: 213">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="299" y="-381" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GS_GearScoreText" inherits="GameFontNormal" text="GearScore: 4000">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="299" y="-364" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GS_LocationText" inherits="GameFontNormal" text="Seen: Blade's Edge Mountains">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="299" y="-398" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GS_DateText" inherits="GameFontNormal" text="January 10, 2009">
+							<Size>
+								<AbsDimension x="250" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="274" y="-416" />
+								</Anchor>
+							</Anchors>
+						</FontString>
 
-				<FontString name="GS_GuildText" inherits="GameFontNormal" text="Rogue Angels">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="299" y="-45" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="GS_InfoText" inherits="GameFontNormal" text="80 BloodElf Death Knight">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="299" y="-30" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				
-				</Layer>
-			</Layers>
-	</Frame>
-	<Frame name="GS_GearFrame" parent="GS_DisplayFrame" toplevel="true" movable="true" enableMouse="true">
-		<Scripts>
-			<OnUpdate>
+
+						<FontString name="GS_GuildText" inherits="GameFontNormal" text="Rogue Angels">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="299" y="-45" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GS_InfoText" inherits="GameFontNormal" text="80 BloodElf Death Knight">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="299" y="-30" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="GS_GearFrame" parent="GS_DisplayFrame" toplevel="true" movable="true" enableMouse="true">
+				<Scripts>
+					<OnUpdate>
 				GS_ExPFrameUpdateCounter = ( GS_ExPFrameUpdateCounter or 0 ) + elapsed
 				if GS_ExPFrameUpdateCounter &gt; 2 then
 						if UnitName("target") and GS_DisplayPlayer == ( UnitName("target") or " " ) then
@@ -482,180 +511,322 @@
 					GS_ExPFrameUpdateCounter = 0
 				end
 			</OnUpdate>
-		</Scripts>
-		<Size>
-			<AbsDimension x="350" y="225" />
-		</Size>
-		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame" >
-				<Offset x="0" y="0" />
-				
-				
-				
-				
-			</Anchor>
-		</Anchors>
-		<Frames>
-
-			<StatusBar name="GS_SpecBar1" id="1" inherits="GS_GearCheckBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_GearFrame" ><Offset><AbsDimension x="35" y="-50"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_SpecBar2" id="2" inherits="GS_GearCheckBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_GearFrame" ><Offset><AbsDimension x="35" y="-85"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_SpecBar3" id="3" inherits="GS_GearCheckBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_GearFrame" ><Offset><AbsDimension x="35" y="-120"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_SpecBar4" id="4" inherits="GS_GearCheckBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_GearFrame" ><Offset><AbsDimension x="35" y="-155"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<DressUpModel xsi:type="PlayerModel" name="GS_Model">
+				</Scripts>
 				<Size>
-					<AbsDimension x="200" y="250" />
+					<AbsDimension x="350" y="225" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
-						<Offset x="299" y="-70" />
+						<Offset x="0" y="0" />
+
+
 					</Anchor>
 				</Anchors>
-				<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-					<BackgroundInsets>
-						<AbsInset left="11" right="12" top="12" bottom="11" />
-					</BackgroundInsets>
-					<TileSize>
-						<AbsValue val="32" />
-					</TileSize>
-					<EdgeSize>
-						<AbsValue val="32" />
-					</EdgeSize>
-				</Backdrop>
-			</DressUpModel>
-			<Button name="GS_Frame1" id="1" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Head.blp" />
-				<Size><AbsDimension x="32" y="32" /></Size>
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="261" y="-70" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame2" id="2" inherits="GS_GearSlotTemplate"  parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Neck.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="261" y="-108" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame3" id="3" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Shoulder.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="261" y="-146" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame5" id="5" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Chest.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="261" y="-222" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame15" id="15" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Chest.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="261" y="-184" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame9" id="9" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Wrists.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="261" y="-260" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame10" id="10" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Hands.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="261" y="-298" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame7" id="7" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Legs.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="505" y="-108" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame8" id="8" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Feet.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="505" y="-146" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame11" id="11" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Finger.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="505" y="-184" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame6" id="6" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Waist.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="505" y="-70" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame12" id="12" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Finger.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="505" y="-222" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame13" id="13" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Trinket.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="505" y="-260" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame14" id="14" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Trinket.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="505" y="-298" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame17" id="17" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-SecondaryHand.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="386" y="-326" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame18" id="18" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Ranged.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="424" y="-326" /></Anchor></Anchors>
-			</Button>
-			<Button name="GS_Frame16" id="16" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
-				<Size><AbsDimension x="32" y="32" /></Size><Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-MainHand.blp" />
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="348" y="-326" /></Anchor></Anchors>
-			</Button>
+				<Frames>
 
-		</Frames>
-	</Frame>
-	<Frame name="GS_NotesFrame" parent="GS_DisplayFrame" toplevel="true" movable="true" enableMouse="true">
-		<Scripts><OnLoad>self:Hide()</OnLoad></Scripts>
-		<Size>
-			<AbsDimension x="350" y="225" />
-		</Size>
-		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame" >
-				<Offset x="215" y="-80" />
-				
-				
-				
-				
-			</Anchor>
-		</Anchors>
-		<Frames>
+					<StatusBar name="GS_SpecBar1" id="1" inherits="GS_GearCheckBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_GearFrame">
+								<Offset>
+									<AbsDimension x="35" y="-50" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_SpecBar2" id="2" inherits="GS_GearCheckBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_GearFrame">
+								<Offset>
+									<AbsDimension x="35" y="-85" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_SpecBar3" id="3" inherits="GS_GearCheckBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_GearFrame">
+								<Offset>
+									<AbsDimension x="35" y="-120" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_SpecBar4" id="4" inherits="GS_GearCheckBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_GearFrame">
+								<Offset>
+									<AbsDimension x="35" y="-155" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<DressUpModel xsi:type="PlayerModel" name="GS_Model">
+						<Size>
+							<AbsDimension x="200" y="250" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="299" y="-70" />
+							</Anchor>
+						</Anchors>
+						<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+							<BackgroundInsets>
+								<AbsInset left="11" right="12" top="12" bottom="11" />
+							</BackgroundInsets>
+							<TileSize>
+								<AbsValue val="32" />
+							</TileSize>
+							<EdgeSize>
+								<AbsValue val="32" />
+							</EdgeSize>
+						</Backdrop>
+					</DressUpModel>
+					<Button name="GS_Frame1" id="1" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Head.blp" />
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="261" y="-70" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame2" id="2" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Neck.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="261" y="-108" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame3" id="3" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Shoulder.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="261" y="-146" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame5" id="5" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Chest.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="261" y="-222" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame15" id="15" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Chest.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="261" y="-184" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame9" id="9" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Wrists.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="261" y="-260" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame10" id="10" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Hands.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="261" y="-298" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame7" id="7" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Legs.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="505" y="-108" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame8" id="8" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Feet.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="505" y="-146" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame11" id="11" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Finger.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="505" y="-184" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame6" id="6" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Waist.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="505" y="-70" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame12" id="12" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Finger.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="505" y="-222" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame13" id="13" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Trinket.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="505" y="-260" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame14" id="14" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Trinket.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="505" y="-298" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame17" id="17" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-SecondaryHand.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="386" y="-326" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame18" id="18" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-Ranged.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="424" y="-326" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GS_Frame16" id="16" inherits="GS_GearSlotTemplate" parent="GS_GearFrame" toplevel="true" movable="true" enableMouse="true">
+						<Size>
+							<AbsDimension x="32" y="32" />
+						</Size>
+						<Backdrop bgFile="Interface\PaperDoll\UI-PaperDoll-Slot-MainHand.blp" />
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+								<Offset x="348" y="-326" />
+							</Anchor>
+						</Anchors>
+					</Button>
 
-			<EditBox name="GS_NotesEditBox"  inherits="InputBoxTemplate">
-				<Size>
-					<AbsDimension x="305" y="225" />
-				</Size>			
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="30" y="0" />
-					</Anchor>
-				</Anchors>
+				</Frames>
+			</Frame>
+			<Frame name="GS_NotesFrame" parent="GS_DisplayFrame" toplevel="true" movable="true" enableMouse="true">
 				<Scripts>
-					<OnEscapePressed>
+					<OnLoad>self:Hide()</OnLoad>
+				</Scripts>
+				<Size>
+					<AbsDimension x="350" y="225" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+						<Offset x="215" y="-80" />
+
+
+					</Anchor>
+				</Anchors>
+				<Frames>
+
+					<EditBox name="GS_NotesEditBox" inherits="InputBoxTemplate">
+						<Size>
+							<AbsDimension x="305" y="225" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="30" y="0" />
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnEscapePressed>
 						self:ClearFocus()
 					</OnEscapePressed>
-				</Scripts>
-			</EditBox>			
-		</Frames>
-	</Frame>
-	<Frame name="GS_PVPFrame" parent="GS_DisplayFrame">
-		<Scripts>
-			<OnLoad>
-
-			</OnLoad>
-			<OnShow>
+						</Scripts>
+					</EditBox>
+				</Frames>
+			</Frame>
+			<Frame name="GS_PVPFrame" parent="GS_DisplayFrame">
+				<Scripts>
+					<OnLoad></OnLoad>
+					<OnShow>
 				--InspectPVPFrame:SetParent(GS_PVPFrame)
 				--InspectPVPFrame:SetPoint("TOPLEFT", 0)
 				--if ( UnitName("target") ) then if ( CanInspect("target") ) then NotifyInspect("target"); InspectFrame:Show(); InspectPVPFrame:Show(); InspectFrame:SetAlpha(0); end; end
 			</OnShow>
-		</Scripts>	
-		<Size><AbsDimension x="600" y="450" /></Size>
-		<Anchors><Anchor point="TOPLEFT"><Offset x="0" y="0" /></Anchor></Anchors>	
-	</Frame>
+				</Scripts>
+				<Size>
+					<AbsDimension x="600" y="450" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="0" y="0" />
+					</Anchor>
+				</Anchors>
+			</Frame>
 
-	<Frame name="GS_TalentsFrame" parent="GS_DisplayFrame">
-		<Scripts>
-			<OnLoad>
-
-			</OnLoad>
-			<OnShow>
+			<Frame name="GS_TalentsFrame" parent="GS_DisplayFrame">
+				<Scripts>
+					<OnLoad></OnLoad>
+					<OnShow>
 				--InspectTalentFrame:SetParent(GS_TalentsFrame)
 				--InspectTalentFrame:SetPoint("TOPLEFT", 0)
 				--InspectFrame:SetAlpha(0)
@@ -663,14 +834,21 @@
 				--if ( UnitName("target") ) then if ( CanInspect("target") ) then NotifyInspect("target"); InspectFrame:Show(); InspectTalentFrame:Show(); InspectFrame:SetAlpha(0); end; end
 			</OnShow>
 
-		</Scripts>	
-		<Size><AbsDimension x="600" y="450" /></Size>
-		<Anchors><Anchor point="TOPLEFT"><Offset x="0" y="0" /></Anchor></Anchors>	
-	</Frame>
-		
-	<Frame name="GS_ExPFrame" parent="GS_DisplayFrame" toplevel="true" movable="true" enableMouse="true">
-		<Scripts><OnLoad>self:Hide()</OnLoad>
-		<OnShow>
+				</Scripts>
+				<Size>
+					<AbsDimension x="600" y="450" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="0" y="0" />
+					</Anchor>
+				</Anchors>
+			</Frame>
+
+			<Frame name="GS_ExPFrame" parent="GS_DisplayFrame" toplevel="true" movable="true" enableMouse="true">
+				<Scripts>
+					<OnLoad>self:Hide()</OnLoad>
+					<OnShow>
 			if UnitName("target") == ( GS_DisplayPlayer or " " ) then 
 				SetAchievementComparisonUnit("target")
 				GearScore_HideDatabase()
@@ -678,203 +856,295 @@
 		</OnShow>
 
 
+				</Scripts>
+				<Size>
+					<AbsDimension x="350" y="225" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+						<Offset x="215" y="-56" />
 
 
-		</Scripts>
-		<Size>
-			<AbsDimension x="350" y="225" />
-		</Size>
-		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame" >
-				<Offset x="215" y="-56" />
-				
-				
-				
-				
-			</Anchor>
-		</Anchors>
-		<Frames>
-			<StatusBar name="GS_XpBar1" inherits="GS_XpBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_ExPFrame" ><Offset><AbsDimension x="175" y="-20"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_XpBar2" inherits="GS_XpBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_ExPFrame" ><Offset><AbsDimension x="175" y="-44"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_XpBar3" inherits="GS_XpBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_ExPFrame" ><Offset><AbsDimension x="175" y="-68"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_XpBar4" inherits="GS_XpBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_ExPFrame" ><Offset><AbsDimension x="175" y="-92"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_XpBar5" inherits="GS_XpBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_ExPFrame" ><Offset><AbsDimension x="175" y="-116"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_XpBar6" inherits="GS_XpBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_ExPFrame" ><Offset><AbsDimension x="175" y="-140"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_XpBar7" inherits="GS_XpBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_ExPFrame"><Offset><AbsDimension x="175" y="-164"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_XpBar8" inherits="GS_XpBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_ExPFrame" ><Offset><AbsDimension x="175" y="-188"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_XpBar9" inherits="GS_XpBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_ExPFrame" ><Offset><AbsDimension x="175" y="-212"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_XpBar10" inherits="GS_XpBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_ExPFrame" ><Offset><AbsDimension x="175" y="-236"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_XpBar11" inherits="GS_XpBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_ExPFrame" ><Offset><AbsDimension x="175" y="-260"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_XpBar12" inherits="GS_XpBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_ExPFrame" ><Offset><AbsDimension x="175" y="-284"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_XpBar13" inherits="GS_XpBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_ExPFrame" ><Offset><AbsDimension x="175" y="-308"/></Offset></Anchor></Anchors>
-			</StatusBar>
-			<StatusBar name="GS_XpBar14" inherits="GS_XpBarTemplate">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_ExPFrame" ><Offset><AbsDimension x="175" y="-332"/></Offset></Anchor></Anchors>
-			</StatusBar>
-</Frames>
-		<Layers>
-			<Layer level="OVERLAY">
-				<FontString name="GS_InstanceStaticText1" inherits="GameFontNormal" text="|cFFFFFFFFRaiding Difficulty Chart" justifyH="Center">
-					<Size>
-						<AbsDimension x="195" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
-							<Offset x="40" y="-40" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-	
-				<FontString name="GS_InstanceStaticText2" inherits="GameFontNormal" text="|cFFFFFFFFRaid history requires a target" justifyH="Center">
-					<Size><AbsDimension x="195" y="20" /></Size>
-					<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="40" y="-304" /></Anchor></Anchors>
-				</FontString>	
+					</Anchor>
+				</Anchors>
+				<Frames>
+					<StatusBar name="GS_XpBar1" inherits="GS_XpBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_ExPFrame">
+								<Offset>
+									<AbsDimension x="175" y="-20" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_XpBar2" inherits="GS_XpBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_ExPFrame">
+								<Offset>
+									<AbsDimension x="175" y="-44" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_XpBar3" inherits="GS_XpBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_ExPFrame">
+								<Offset>
+									<AbsDimension x="175" y="-68" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_XpBar4" inherits="GS_XpBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_ExPFrame">
+								<Offset>
+									<AbsDimension x="175" y="-92" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_XpBar5" inherits="GS_XpBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_ExPFrame">
+								<Offset>
+									<AbsDimension x="175" y="-116" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_XpBar6" inherits="GS_XpBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_ExPFrame">
+								<Offset>
+									<AbsDimension x="175" y="-140" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_XpBar7" inherits="GS_XpBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_ExPFrame">
+								<Offset>
+									<AbsDimension x="175" y="-164" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_XpBar8" inherits="GS_XpBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_ExPFrame">
+								<Offset>
+									<AbsDimension x="175" y="-188" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_XpBar9" inherits="GS_XpBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_ExPFrame">
+								<Offset>
+									<AbsDimension x="175" y="-212" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_XpBar10" inherits="GS_XpBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_ExPFrame">
+								<Offset>
+									<AbsDimension x="175" y="-236" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_XpBar11" inherits="GS_XpBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_ExPFrame">
+								<Offset>
+									<AbsDimension x="175" y="-260" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_XpBar12" inherits="GS_XpBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_ExPFrame">
+								<Offset>
+									<AbsDimension x="175" y="-284" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_XpBar13" inherits="GS_XpBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_ExPFrame">
+								<Offset>
+									<AbsDimension x="175" y="-308" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="GS_XpBar14" inherits="GS_XpBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GS_ExPFrame">
+								<Offset>
+									<AbsDimension x="175" y="-332" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+				</Frames>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="GS_InstanceStaticText1" inherits="GameFontNormal" text="|cFFFFFFFFRaiding Difficulty Chart" justifyH="Center">
+							<Size>
+								<AbsDimension x="195" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+									<Offset x="40" y="-40" />
+								</Anchor>
+							</Anchors>
+						</FontString>
 
-				<FontString name="GS_InstanceStaticText3" inherits="GameFontNormal" text="|cFFFFFFFFwithin inspection range." justifyH="Center">
-					<Size><AbsDimension x="195" y="20" /></Size>
-					<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame"><Offset x="40" y="-326" /></Anchor></Anchors>
-				</FontString>
+						<FontString name="GS_InstanceStaticText2" inherits="GameFontNormal" text="|cFFFFFFFFRaid history requires a target" justifyH="Center">
+							<Size>
+								<AbsDimension x="195" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+									<Offset x="40" y="-304" />
+								</Anchor>
+							</Anchors>
+						</FontString>
 
-				<FontString name="GS_InstanceText1" inherits="GameFontNormal" text="|cFF09A5B2(2700)|r   Heroics   (iLevel 200)" justifyH="Left">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
-							<Offset x="40" y="-62" />
-						</Anchor>
-					</Anchors>
-				</FontString>				
-				<FontString name="GS_InstanceText2" inherits="GameFontNormal" text="|cFF038CE5(2900)|r   Tier   7.1  (iLevel 200)" justifyH="Left">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
-							<Offset x="40" y="-84" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="GS_InstanceText3" inherits="GameFontNormal" text="|cFF346EFC(3300)|r   Tier   7.2  (iLevel 213)" justifyH="Left">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
-							<Offset x="40" y="-106" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="GS_InstanceText4" inherits="GameFontNormal" text="|cFF5763FB(3500)|r   Tier   8.1  (iLevel 219)" justifyH="Left">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
-							<Offset x="40" y="-128" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="GS_InstanceText5" inherits="GameFontNormal" text="|cFF8C52F8(3800)|r   Tier   8.2  (iLevel 226)" justifyH="Left">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
-							<Offset x="40" y="-150" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="GS_InstanceText6" inherits="GameFontNormal" text="|cFFAF47F7(4000)|r   Tier   9.1  (iLevel 232)" justifyH="Left">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
-							<Offset x="40" y="-172" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="GS_InstanceText7" inherits="GameFontNormal" text="|cFFCF5F7C(4500)|r   Tier   9.2  (iLevel 245)" justifyH="Left">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
-							<Offset x="40" y="-194" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="GS_InstanceText8" inherits="GameFontNormal" text="|cFFE9731B(4900)|r   Tier   9.3  (iLevel 258)" justifyH="Left">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
-							<Offset x="40" y="-216" />
-						</Anchor>
-					</Anchors>
-				</FontString>
+						<FontString name="GS_InstanceStaticText3" inherits="GameFontNormal" text="|cFFFFFFFFwithin inspection range." justifyH="Center">
+							<Size>
+								<AbsDimension x="195" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+									<Offset x="40" y="-326" />
+								</Anchor>
+							</Anchors>
+						</FontString>
 
-				<FontString name="GS_InstanceText9" inherits="GameFontNormal" text="|cFFDC694B(4700)|r   Tier 10.1  (iLevel 251)" justifyH="Left">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
-							<Offset x="40" y="-238" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="GS_InstanceText10" inherits="GameFontNormal" text="|cFFF16B00(5100)|r   Tier 10.2  (iLevel 264)" justifyH="Left">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
-							<Offset x="40" y="-260" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="GS_InstanceText11" inherits="GameFontNormal" text="|cFFF82F00(5600)|r   Tier 10.3  (iLevel 277)" justifyH="Left">
-					<Size>
-						<AbsDimension x="200" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
-							<Offset x="40" y="-282" />
-						</Anchor>
-					</Anchors>
-				</FontString>
+						<FontString name="GS_InstanceText1" inherits="GameFontNormal" text="|cFF09A5B2(2700)|r   Heroics   (iLevel 200)" justifyH="Left">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+									<Offset x="40" y="-62" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GS_InstanceText2" inherits="GameFontNormal" text="|cFF038CE5(2900)|r   Tier   7.1  (iLevel 200)" justifyH="Left">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+									<Offset x="40" y="-84" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GS_InstanceText3" inherits="GameFontNormal" text="|cFF346EFC(3300)|r   Tier   7.2  (iLevel 213)" justifyH="Left">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+									<Offset x="40" y="-106" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GS_InstanceText4" inherits="GameFontNormal" text="|cFF5763FB(3500)|r   Tier   8.1  (iLevel 219)" justifyH="Left">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+									<Offset x="40" y="-128" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GS_InstanceText5" inherits="GameFontNormal" text="|cFF8C52F8(3800)|r   Tier   8.2  (iLevel 226)" justifyH="Left">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+									<Offset x="40" y="-150" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GS_InstanceText6" inherits="GameFontNormal" text="|cFFAF47F7(4000)|r   Tier   9.1  (iLevel 232)" justifyH="Left">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+									<Offset x="40" y="-172" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GS_InstanceText7" inherits="GameFontNormal" text="|cFFCF5F7C(4500)|r   Tier   9.2  (iLevel 245)" justifyH="Left">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+									<Offset x="40" y="-194" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GS_InstanceText8" inherits="GameFontNormal" text="|cFFE9731B(4900)|r   Tier   9.3  (iLevel 258)" justifyH="Left">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+									<Offset x="40" y="-216" />
+								</Anchor>
+							</Anchors>
+						</FontString>
 
-						</Layer>
-	</Layers>
-</Frame>
+						<FontString name="GS_InstanceText9" inherits="GameFontNormal" text="|cFFDC694B(4700)|r   Tier 10.1  (iLevel 251)" justifyH="Left">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+									<Offset x="40" y="-238" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GS_InstanceText10" inherits="GameFontNormal" text="|cFFF16B00(5100)|r   Tier 10.2  (iLevel 264)" justifyH="Left">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+									<Offset x="40" y="-260" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GS_InstanceText11" inherits="GameFontNormal" text="|cFFF82F00(5600)|r   Tier 10.3  (iLevel 277)" justifyH="Left">
+							<Size>
+								<AbsDimension x="200" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="GS_DisplayFrame">
+									<Offset x="40" y="-282" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+
+					</Layer>
+				</Layers>
+			</Frame>
 
 			<Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" id="1" text="Equipment">
 				<Anchors>
@@ -916,7 +1186,7 @@
 				</Scripts>
 
 			</Button>
-			<Button name="$parentTab3" inherits="CharacterFrameTabButtonTemplate"  id="3" text="Options">
+			<Button name="$parentTab3" inherits="CharacterFrameTabButtonTemplate" id="3" text="Options">
 				<Size>
 					<AbsDimension x="75" y="23" />
 				</Size>
@@ -937,16 +1207,16 @@
 					</OnClick>
 				</Scripts>
 			</Button>
-	            <Button name="GSDisplayFrameCloseButton" inherits="UIPanelCloseButton">
-        	        <Anchors>
-                	    <Anchor point="CENTER" relativeTo="GS_DisplayFrame" relativePoint="TOPRIGHT">
-	                        <Offset>
-                        	    <AbsDimension x="-22" y="-22"/>
-        	                </Offset>
-	                    </Anchor>
-	                </Anchors>
-	                <Scripts>
-	                    <OnLoad>
+			<Button name="GSDisplayFrameCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="CENTER" relativeTo="GS_DisplayFrame" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-22" y="-22" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
 	                        self:SetFrameLevel(self:GetFrameLevel() + 4);
 	                    </OnLoad>
 					<OnClick>
@@ -955,30 +1225,20 @@
 						GS_DisplayFrame:Hide()
 						GearScore_HideDatabase()
 					</OnClick>
-	                </Scripts>
-	            </Button>
+				</Scripts>
+			</Button>
 
 		</Frames>
 		<Layers>
-			<Layer level="OVERLAY">
-
-			</Layer>
-			<Layer>
-
-			</Layer>
+			<Layer level="OVERLAY"></Layer>
+			<Layer></Layer>
 		</Layers>
 	</Frame>
 
 
-
-
-
-
-
-
 	<Frame name="GS_OptionsFrame" parent="GS_DisplayFrame" toplevel="true">
 		<Scripts>
-		<OnLoad>
+			<OnLoad>
 			self:Hide()
 		</OnLoad>
 		</Scripts>
@@ -1003,10 +1263,16 @@
 					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide()
-					</OnLeave>							
+					</OnLeave>
 				</Scripts>
-				<Size><AbsDimension x="20" y="20" /></Size>
-				<Anchors><Anchor point="TOPLEFT"><Offset x="500" y="-51" /></Anchor></Anchors>
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="500" y="-51" />
+					</Anchor>
+				</Anchors>
 			</CheckButton>
 			<Button name="Button3" inherits="UIPanelButtonTemplate" text="Defaults">
 				<Size>
@@ -1087,10 +1353,10 @@
 						GameTooltip:AddLine("for cloth, leather, and mail in addition")
 						GameTooltip:AddLine("to plate armor.")
 						GameTooltip:Show()
-					</OnEnter>		
+					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide()
-					</OnLeave>								
+					</OnLeave>
 				</Scripts>
 
 				<Anchors>
@@ -1119,10 +1385,10 @@
 						GameTooltip:AddLine("cloth; and a Paladin will be listed for")
 						GameTooltip:AddLine("plate, mail, leather, and cloth.")
 						GameTooltip:Show()
-					</OnEnter>		
+					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide()
-					</OnLeave>					
+					</OnLeave>
 				</Scripts>
 				<Anchors>
 					<Anchor point="TOPLEFT">
@@ -1139,15 +1405,20 @@
 						GameTooltip:AddLine("Shows GearScore information in tooltips"); 
 						GameTooltip:AddLine("while mousing over items.");
 						GameTooltip:Show()
-					</OnEnter>		
+					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide()
 					</OnLeave>
-					<OnClick>
-					</OnClick>					
+					<OnClick></OnClick>
 				</Scripts>
-				<Size><AbsDimension x="20" y="20" /></Size>
-				<Anchors><Anchor point="TOPLEFT"><Offset x="500" y="-77" /></Anchor></Anchors>
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="500" y="-77" />
+					</Anchor>
+				</Anchors>
 			</CheckButton>
 			<CheckButton name="GS_LevelCheck" inherits="UICheckButtonTemplate" text="CheckButton7">
 				<Scripts>
@@ -1158,10 +1429,10 @@
 						GameTooltip:AddLine("Adds iLevel information to tooltips")
 						GameTooltip:AddLine("for both players and items.")
 						GameTooltip:Show()
-					</OnEnter>		
+					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide()
-					</OnLeave>					
+					</OnLeave>
 				</Scripts>
 				<Size>
 					<AbsDimension x="20" y="20" />
@@ -1182,11 +1453,17 @@
 						GameTooltip:AddLine("Shows "..self:GetText().." SpecScores")
 						GameTooltip:AddLine("in item tooltips.")
 						GameTooltip:Show()
-					</OnEnter>		
-					<OnLeave>GameTooltip:Hide()</OnLeave>					
+					</OnEnter>
+					<OnLeave>GameTooltip:Hide()</OnLeave>
 				</Scripts>
-				<Size><AbsDimension x="20" y="20" /></Size>
-				<Anchors><Anchor point="TOPLEFT"><Offset x="500" y="-155" />	</Anchor></Anchors>
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="500" y="-155" />
+					</Anchor>
+				</Anchors>
 			</CheckButton>
 			<CheckButton name="GS_SpecScoreCheck2" inherits="UICheckButtonTemplate" text="CheckButton7">
 				<Scripts>
@@ -1197,11 +1474,17 @@
 						GameTooltip:AddLine("Shows "..self:GetText().." SpecScores")
 						GameTooltip:AddLine("in item tooltips.")
 						GameTooltip:Show()
-					</OnEnter>		
-					<OnLeave>GameTooltip:Hide()</OnLeave>					
+					</OnEnter>
+					<OnLeave>GameTooltip:Hide()</OnLeave>
 				</Scripts>
-				<Size><AbsDimension x="20" y="20" /></Size>
-				<Anchors><Anchor point="TOPLEFT"><Offset x="500" y="-175" />	</Anchor></Anchors>
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="500" y="-175" />
+					</Anchor>
+				</Anchors>
 			</CheckButton>
 			<CheckButton name="GS_SpecScoreCheck3" inherits="UICheckButtonTemplate" text="CheckButton7">
 				<Scripts>
@@ -1212,11 +1495,17 @@
 						GameTooltip:AddLine("Shows "..self:GetText().." SpecScores")
 						GameTooltip:AddLine("in item tooltips.")
 						GameTooltip:Show()
-					</OnEnter>		
-					<OnLeave>GameTooltip:Hide()</OnLeave>					
+					</OnEnter>
+					<OnLeave>GameTooltip:Hide()</OnLeave>
 				</Scripts>
-				<Size><AbsDimension x="20" y="20" /></Size>
-				<Anchors><Anchor point="TOPLEFT"><Offset x="500" y="-195" />	</Anchor></Anchors>
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="500" y="-195" />
+					</Anchor>
+				</Anchors>
 			</CheckButton>
 			<CheckButton name="GS_SpecScoreCheck4" inherits="UICheckButtonTemplate" text="CheckButton7">
 				<Scripts>
@@ -1227,11 +1516,17 @@
 						GameTooltip:AddLine("Shows "..self:GetText().." SpecScores")
 						GameTooltip:AddLine("in item tooltips.")
 						GameTooltip:Show()
-					</OnEnter>		
-					<OnLeave>GameTooltip:Hide()</OnLeave>					
+					</OnEnter>
+					<OnLeave>GameTooltip:Hide()</OnLeave>
 				</Scripts>
-				<Size><AbsDimension x="20" y="20" /></Size>
-				<Anchors><Anchor point="TOPLEFT"><Offset x="500" y="-215" />	</Anchor></Anchors>
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="500" y="-215" />
+					</Anchor>
+				</Anchors>
 			</CheckButton>
 
 			<CheckButton name="GS_DetailCheck" inherits="UICheckButtonTemplate" text="CheckButton8">
@@ -1244,13 +1539,19 @@
 						GameTooltip:AddLine("GearScore a player has equiped to")
 						GameTooltip:AddLine("that player's tooltip.")
 						GameTooltip:Show()
-					</OnEnter>		
+					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide()
-					</OnLeave>					
+					</OnLeave>
 				</Scripts>
-				<Size><AbsDimension x="20" y="20" /></Size>
-				<Anchors><Anchor point="TOPLEFT"><Offset x="500" y="-129" /></Anchor></Anchors>
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="500" y="-129" />
+					</Anchor>
+				</Anchors>
 			</CheckButton>
 			<CheckButton name="GS_DateCheck" inherits="UICheckButtonTemplate" text="CheckButton8">
 				<Scripts>
@@ -1260,13 +1561,19 @@
 						GameTooltip:AddLine("Show Dates on Tooltip",1,1,1)
 						GameTooltip:AddLine("Enabling this option will show you how old a GearScore is for that player on the tooltip.", nil, nil, nil, 1)
 						GameTooltip:Show()
-					</OnEnter>		
+					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide()
-					</OnLeave>					
+					</OnLeave>
 				</Scripts>
-				<Size><AbsDimension x="20" y="20" /></Size>
-				<Anchors><Anchor point="TOPLEFT"><Offset x="500" y="-234" /></Anchor></Anchors>
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="500" y="-234" />
+					</Anchor>
+				</Anchors>
 			</CheckButton>
 			<CheckButton name="GS_HelpCheck" inherits="UICheckButtonTemplate" text="CheckButton8">
 				<Scripts>
@@ -1276,13 +1583,19 @@
 						GameTooltip:AddLine("Show GearScores Tips/Help",1,1,1)
 						GameTooltip:AddLine("Uncheck this box to remove GearScore tips and help from the tooltip.", nil, nil, nil, 1)
 						GameTooltip:Show()
-					</OnEnter>		
+					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide()
-					</OnLeave>					
+					</OnLeave>
 				</Scripts>
-				<Size><AbsDimension x="20" y="20" /></Size>
-				<Anchors><Anchor point="TOPLEFT"><Offset x="500" y="-260" /></Anchor></Anchors>
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="500" y="-260" />
+					</Anchor>
+				</Anchors>
 			</CheckButton>
 			<CheckButton name="GS_ChatCheck" inherits="UICheckButtonTemplate" text="CheckButton8">
 				<Scripts>
@@ -1295,13 +1608,19 @@
 						GameTooltip:AddLine("these scores to open the GearScore")
 						GameTooltip:AddLine("profile for that player.")
 						GameTooltip:Show()
-					</OnEnter>		
+					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide()
-					</OnLeave>					
+					</OnLeave>
 				</Scripts>
-				<Size><AbsDimension x="20" y="20" /></Size>
-				<Anchors><Anchor point="TOPLEFT"><Offset x="500" y="-286" /></Anchor></Anchors>
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="500" y="-286" />
+					</Anchor>
+				</Anchors>
 			</CheckButton>
 			<EditBox name="GS_LevelEditBox" inherits="InputBoxTemplate">
 				<Size>
@@ -1315,16 +1634,14 @@
 				<Scripts>
 					<OnLoad>
 						 	GS_LevelEditBox:SetAutoFocus(0); self:SetNumeric(true)
-					</OnLoad>				
+					</OnLoad>
 					<OnEscapePressed>
 						GS_LevelEditBox:ClearFocus()
 					</OnEscapePressed>
-					<OnEnterPressed>
-							
-					</OnEnterPressed>
-				</Scripts>				
+					<OnEnterPressed></OnEnterPressed>
+				</Scripts>
 			</EditBox>
-																																									
+
 
 			<CheckButton name="GS_PruneCheck" inherits="UICheckButtonTemplate" text="CheckButton10" checked="true">
 				<Scripts>
@@ -1339,8 +1656,8 @@
 					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide()
-					</OnLeave>							
-				</Scripts>			
+					</OnLeave>
+				</Scripts>
 				<Size>
 					<AbsDimension x="20" y="20" />
 				</Size>
@@ -1368,8 +1685,8 @@
 						local EnglishFaction, Faction = UnitFactionGroup("player")
 						--if ( EnglishFaction == "Horde" ) then GS_OppFactionText:SetText("Record Alliance Players"); end
 						--if ( EnglishFaction == "Alliance" ) then GS_OppFactionText:SetText("Record Horde Players"); end
-					</OnLoad>												
-				</Scripts>			
+					</OnLoad>
+				</Scripts>
 				<Size>
 					<AbsDimension x="20" y="20" />
 				</Size>
@@ -1378,41 +1695,39 @@
 						<Offset x="61" y="-103" />
 					</Anchor>
 				</Anchors>
-			</CheckButton>		
+			</CheckButton>
 
 
-		<Slider name="GS_DatabaseAgeSlider" inherits="OptionsSliderTemplate">
-			<Size>
-				<AbsDimension x="144" y="16"/>
-			</Size>
-			<Anchors>
-				<Anchor point="TOPLEFT">
-			<Offset><AbsDimension x="18" y="-350"/></Offset>
-			</Anchor>
+			<Slider name="GS_DatabaseAgeSlider" inherits="OptionsSliderTemplate">
+				<Size>
+					<AbsDimension x="144" y="16" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="18" y="-350" />
+						</Offset>
+					</Anchor>
 					<Anchor point="TOPLEFT">
 						<Offset x="61" y="-143" />
 					</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnLoad>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
 					getglobal(self:GetName().."High"):SetText("30");
 					getglobal(self:GetName().."Low"):SetText("1");
 					self:SetMinMaxValues(1,30);
 					self:SetValueStep(1);
 					getglobal(self:GetName().."Text"):SetText("Keep data for: 30 days.")
 				</OnLoad>
-				<OnValueChanged> 
+					<OnValueChanged> 
 					getglobal(self:GetName().."Text"):SetText("Keep data for: "..GS_DatabaseAgeSlider:GetValue().." days.")
 					--if ( GS_Settings ) then GS_Settings["DatabaseAgeSlider"] = GS_DatabaseAgeSlider:GetValue(); end
 				</OnValueChanged>
 				</Scripts>
-		</Slider>
+			</Slider>
 
 
-
-
-
-	
 			<CheckButton name="GS_MasterlootCheck" inherits="UICheckButtonTemplate" text="CheckButton11">
 				<Scripts>
 					<OnEnter>
@@ -1426,8 +1741,8 @@
 					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide()
-					</OnLeave>							
-				</Scripts>			
+					</OnLeave>
+				</Scripts>
 				<Size>
 					<AbsDimension x="20" y="20" />
 				</Size>
@@ -1515,27 +1830,56 @@
 					</Anchors>
 				</FontString>
 
-				<FontString name="GS_SpecFontString1" inherits="GameFontNormal" text="Show Restoration SpecScores" id="1" justifyH="RIGHT">/f
-					<Anchors><Anchor point="TOPRIGHT" relativepoint="TOPLEFT"><Offset x="486" y="-160" />	</Anchor></Anchors>
+				<FontString name="GS_SpecFontString1" inherits="GameFontNormal" text="Show Restoration SpecScores" id="1" justifyH="RIGHT">
+					/f
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativepoint="TOPLEFT">
+							<Offset x="486" y="-160" />
+						</Anchor>
+					</Anchors>
 				</FontString>
 				<FontString name="GS_SpecFontString2" inherits="GameFontNormal" text="Show Elemental SpecScores" id="2" justifyH="RIGHT">
-					<Anchors><Anchor point="TOPRIGHT" relativepoint="TOPLEFT"><Offset x="486" y="-180" />	</Anchor></Anchors>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativepoint="TOPLEFT">
+							<Offset x="486" y="-180" />
+						</Anchor>
+					</Anchors>
 				</FontString>
 				<FontString name="GS_SpecFontString3" inherits="GameFontNormal" text="Show Enhancement SpecScores" id="3" justifyH="RIGHT">
-					<Anchors><Anchor point="TOPRIGHT" relativepoint="TOPLEFT"><Offset x="486" y="-200" />	</Anchor></Anchors>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativepoint="TOPLEFT">
+							<Offset x="486" y="-200" />
+						</Anchor>
+					</Anchors>
 				</FontString>
 				<FontString name="GS_SpecFontString4" inherits="GameFontNormal" text="Show Tanking SpecScores" id="4" justifyH="RIGHT">
-					<Anchors><Anchor point="TOPRIGHT" relativepoint="TOPLEFT"><Offset x="486" y="-220" />	</Anchor></Anchors>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativepoint="TOPLEFT">
+							<Offset x="486" y="-220" />
+						</Anchor>
+					</Anchors>
 				</FontString>
 				<FontString name="GS_FontString189" inherits="GameFontNormal" text="Show Data Age on Tooltip" justifyH="RIGHT">
-					<Anchors><Anchor point="TOPLEFT"><Offset x="330" y="-234" />	</Anchor></Anchors>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="330" y="-234" />
+						</Anchor>
+					</Anchors>
 				</FontString>
 				<FontString name="GS_FontString89" inherits="GameFontNormal" text="Show GearScore Tips/Help" justifyH="RIGHT">
-					<Anchors><Anchor point="TOPLEFT"><Offset x="330" y="-260" />	</Anchor></Anchors>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="330" y="-260" />
+						</Anchor>
+					</Anchors>
 				</FontString>
 
 				<FontString name="GS_FontString88" inherits="GameFontNormal" text="Show GearScores in Chat" justifyH="RIGHT">
-					<Anchors><Anchor point="TOPLEFT"><Offset x="336" y="-286" />	</Anchor></Anchors>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="336" y="-286" />
+						</Anchor>
+					</Anchors>
 				</FontString>
 				<FontString name="GS_FontString5" inherits="GameFontNormal" text="Light">
 					<Size>
@@ -1597,7 +1941,7 @@
 							<Offset x="93" y="-103" />
 						</Anchor>
 					</Anchors>
-				</FontString>				
+				</FontString>
 				<FontString name="GS_FontString14" inherits="GameFontNormalLarge" text="Masterloot Options" justifyH="RIGHT">
 					<Size>
 						<AbsDimension x="174" y="20" />
@@ -1629,8 +1973,8 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-							
-																																																										
+
+
 			</Layer>
 		</Layers>
 	</Frame>
@@ -1641,14 +1985,14 @@
 			<OnHide>
 				if ( GS_DatabaseFrame.tooltip ) then GS_DatabaseFrame.tooltip:Hide(); end
 			</OnHide>
-		<OnMouseWheel>
+			<OnMouseWheel>
 			GearScore_DisplayDatabase(GS_DisplayedGroup, GS_SortedType, 1, (GS_StartPage - (25  * delta)))
 			--print(self, delta)
 		</OnMouseWheel>
-		<OnEscapePressed>
+			<!-- <OnEscapePressed>
 			self:Hide()
-		</OnEscapePressed>
-		<OnLoad>
+		</OnEscapePressed> -->
+			<OnLoad>
 		tinsert(UISpecialFrames, self:GetName());
 			self:Hide()
 	self:EnableMouse(true)
@@ -1678,72 +2022,126 @@
 			</EdgeSize>
 		</Backdrop>
 
-	<Frames>
-<GameTooltip name="GearScoreTooltip" inherits="GameTooltipTemplate">
-   <Scripts>
-     <Onload>
+		<Frames>
+			<GameTooltip name="GearScoreTooltip" inherits="GameTooltipTemplate">
+				<Scripts>
+					<Onload>
        self:SetOwner(GS_DatabaseFrame, "ANCHOR_BOTTOMLEFT");
      </Onload>
-   </Scripts>
- </GameTooltip>
-	            <Button name="GSDatabaseFrameCloseButton" inherits="UIPanelCloseButton">
-        	        <Anchors>
-                	    <Anchor point="CENTER" relativeTo="GS_DatabaseFrame" relativePoint="TOPRIGHT">
-	                        <Offset>
-                        	    <AbsDimension x="-22" y="-22"/>
-        	                </Offset>
-	                    </Anchor>
-	                </Anchors>
-	                <Scripts>
-	                    <OnLoad>
+				</Scripts>
+			</GameTooltip>
+			<Button name="GSDatabaseFrameCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="CENTER" relativeTo="GS_DatabaseFrame" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-22" y="-22" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
 	                        self:SetFrameStrata("TOOLTIP");
 	                    </OnLoad>
 					<OnClick>
 						GearScore_HideDatabase(1)
 					</OnClick>
-	                </Scripts>
-	            </Button>
+				</Scripts>
+			</Button>
 			<Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" id="1" text="Group">
-				<Anchors><Anchor point="TOPLEFT"><Offset x="0" y="-464" /></Anchor></Anchors>
-				<Scripts><OnClick>GearScore_HideDatabase(); GearScore_DisplayDatabase("Party", SortType); PanelTemplates_SetTab(GS_DatabaseFrame, 1)</OnClick></Scripts>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="0" y="-464" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>GearScore_HideDatabase(); GearScore_DisplayDatabase("Party", SortType); PanelTemplates_SetTab(GS_DatabaseFrame, 1)</OnClick>
+				</Scripts>
 			</Button>
 			<Button name="$parentTab2" inherits="CharacterFrameTabButtonTemplate" id="2" text="Guild">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DatabaseFrameTab1" relativePoint="TOPRIGHT"><Offset x="-14" y="" /></Anchor></Anchors>
-				<Scripts><OnClick>GearScore_HideDatabase(); GearScore_DisplayDatabase("Guild", SortType); PanelTemplates_SetTab(GS_DatabaseFrame, 2)</OnClick></Scripts>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="GS_DatabaseFrameTab1" relativePoint="TOPRIGHT">
+						<Offset x="-14" y="" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>GearScore_HideDatabase(); GearScore_DisplayDatabase("Guild", SortType); PanelTemplates_SetTab(GS_DatabaseFrame, 2)</OnClick>
+				</Scripts>
 			</Button>
 			<Button name="$parentTab3" inherits="CharacterFrameTabButtonTemplate" id="3" text="Friends">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DatabaseFrameTab2" relativePoint="TOPRIGHT"><Offset x="-14" y="" /></Anchor></Anchors>
-				<Scripts><OnClick>GearScore_HideDatabase(); GearScore_DisplayDatabase("Friends", SortType); PanelTemplates_SetTab(GS_DatabaseFrame, 3)</OnClick></Scripts>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="GS_DatabaseFrameTab2" relativePoint="TOPRIGHT">
+						<Offset x="-14" y="" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>GearScore_HideDatabase(); GearScore_DisplayDatabase("Friends", SortType); PanelTemplates_SetTab(GS_DatabaseFrame, 3)</OnClick>
+				</Scripts>
 			</Button>
 			<Button name="$parentTab4" inherits="CharacterFrameTabButtonTemplate" id="4" text="All">
-				<Anchors><Anchor point="TOPLEFT" relativeTo="GS_DatabaseFrameTab3" relativePoint="TOPRIGHT"><Offset x="-14" y="" /></Anchor></Anchors>
-				<Scripts><OnClick>GearScore_HideDatabase(); GearScore_DisplayDatabase("All", SortType); PanelTemplates_SetTab(GS_DatabaseFrame, 4)</OnClick></Scripts>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="GS_DatabaseFrameTab3" relativePoint="TOPRIGHT">
+						<Offset x="-14" y="" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>GearScore_HideDatabase(); GearScore_DisplayDatabase("All", SortType); PanelTemplates_SetTab(GS_DatabaseFrame, 4)</OnClick>
+				</Scripts>
 			</Button>
 
-		
- 			<Button name="GS_PreviousButton" inherits="UIPanelButtonTemplate" text="Prev">
-				<Size><AbsDimension x="42" y="23" /></Size>
-				<Anchors><Anchor point="BOTTOMLEFT"><Offset x="345" y="15" /></Anchor></Anchors>
-				<Scripts><OnClick>--GearScore_HideDatabase(); 
-				GearScore_DisplayDatabase(GS_DisplayedGroup, GS_SortedType, 1, (GS_StartPage - 25))</OnClick></Scripts>
-			</Button>		
-			 			<Button name="GS_NextButton" inherits="UIPanelButtonTemplate" text="Next">
-				<Size><AbsDimension x="42" y="23" /></Size>
-				<Anchors><Anchor point="BOTTOMLEFT"><Offset x="390" y="15" /></Anchor></Anchors>
-				<Scripts><OnClick>--GearScore_HideDatabase(); 
-				GearScore_DisplayDatabase(GS_DisplayedGroup, GS_SortedType, 1, (GS_StartPage + 25))</OnClick></Scripts>
-			</Button>			
-			<Button name="GS_BackProfileButton" inherits="UIPanelButtonTemplate" text="Profiles">
-				<Size><AbsDimension x="75" y="23" /></Size>
-				<Anchors><Anchor point="BOTTOMRIGHT"><Offset x="-15" y="15" /></Anchor></Anchors>
-				<Scripts><OnClick>--GearScore_HideDatabase(); 
-				GearScore_DisplayUnit(GS_DisplayPlayer, 1)</OnClick></Scripts>
+
+			<Button name="GS_PreviousButton" inherits="UIPanelButtonTemplate" text="Prev">
+				<Size>
+					<AbsDimension x="42" y="23" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset x="345" y="15" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>--GearScore_HideDatabase(); 
+				GearScore_DisplayDatabase(GS_DisplayedGroup, GS_SortedType, 1, (GS_StartPage - 25))</OnClick>
+				</Scripts>
 			</Button>
-			
+			<Button name="GS_NextButton" inherits="UIPanelButtonTemplate" text="Next">
+				<Size>
+					<AbsDimension x="42" y="23" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset x="390" y="15" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>--GearScore_HideDatabase(); 
+				GearScore_DisplayDatabase(GS_DisplayedGroup, GS_SortedType, 1, (GS_StartPage + 25))</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="GS_BackProfileButton" inherits="UIPanelButtonTemplate" text="Profiles">
+				<Size>
+					<AbsDimension x="75" y="23" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset x="-15" y="15" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>--GearScore_HideDatabase(); 
+				GearScore_DisplayUnit(GS_DisplayPlayer, 1)</OnClick>
+				</Scripts>
+			</Button>
+
 
 			<EditBox name="GS_SearchXBox" inherits="InputBoxTemplate">
-				<Size><AbsDimension x="100" y="32" /></Size>
-				<Anchors><Anchor point="BOTTOMRIGHT"><Offset x="-250" y="10" /></Anchor></Anchors>
+				<Size>
+					<AbsDimension x="100" y="32" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset x="-250" y="10" />
+					</Anchor>
+				</Anchors>
 				<Scripts>
 					<OnUpdate>
 						if not ( GS_SBT ) then GS_SBT = ""; end
@@ -1758,31 +2156,503 @@
 					GearScore_HideDatabase(); GearScore_DisplayDatabase("Search")</OnEnterPressed>
 					<OnLoad>self:SetAutoFocus(0); </OnLoad>
 				</Scripts>
-			</EditBox>	
- 			<Button name="GS_Search2Button" inherits="UIPanelButtonTemplate" text="Search">
-				<Size><AbsDimension x="75" y="23" /></Size>
-				<Anchors><Anchor point="BOTTOMRIGHT"><Offset x="-175" y="15" /></Anchor></Anchors>
-				<Scripts><OnClick>GearScore_HideDatabase(); GearScore_DisplayDatabase("Search", "GearScore")</OnClick></Scripts>
-			</Button>							
- 			<Button name="GS_Search2Button" inherits="UIPanelButtonTemplate" text="Report">
-				<Size><AbsDimension x="75" y="23" /></Size>
-				<Anchors><Anchor point="BOTTOMRIGHT"><Offset x="-95" y="15" /></Anchor></Anchors>
-				<Scripts><OnClick>GearScore_ShowReport()</OnClick></Scripts>
-			</Button>	
+			</EditBox>
+			<Button name="GS_Search2Button" inherits="UIPanelButtonTemplate" text="Search">
+				<Size>
+					<AbsDimension x="75" y="23" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset x="-175" y="15" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>GearScore_HideDatabase(); GearScore_DisplayDatabase("Search", "GearScore")</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="GS_Search2Button" inherits="UIPanelButtonTemplate" text="Report">
+				<Size>
+					<AbsDimension x="75" y="23" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset x="-95" y="15" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>GearScore_ShowReport()</OnClick>
+				</Scripts>
+			</Button>
 
-			
-		<Frame name="GS_ReportFrame">
-		<Scripts>
-			<OnLoad>
+
+			<Frame name="GS_ReportFrame">
+				<Scripts>
+					<OnLoad>
 				self:Hide()
 			</OnLoad>
-		</Scripts>
+				</Scripts>
+				<Size>
+					<AbsDimension x="187" y="427" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset x="820" y="0" />
+					</Anchor>
+				</Anchors>
+				<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+					<BackgroundInsets>
+						<AbsInset left="11" right="12" top="12" bottom="11" />
+					</BackgroundInsets>
+					<TileSize>
+						<AbsValue val="32" />
+					</TileSize>
+					<EdgeSize>
+						<AbsValue val="32" />
+					</EdgeSize>
+				</Backdrop>
+				<Frames>
+					<Slider name="GS_Slider" inherits="OptionsSliderTemplate">
+						<Size>
+							<AbsDimension x="144" y="16" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="18" y="-350" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+					getglobal(self:GetName().."High"):SetText("25");
+					getglobal(self:GetName().."Low"):SetText("1");
+					self:SetMinMaxValues(1,25);
+					self:SetValueStep(1);
+				</OnLoad>
+							<OnValueChanged> 
+					getglobal(self:GetName().."Text"):SetText("Top: "..GS_Slider:GetValue())
+					if ( GS_Settings ) then GS_Settings["Slider"] = GS_Slider:GetValue(); end
+				</OnValueChanged>
+						</Scripts>
+					</Slider>
+
+					<EditBox name="GSX_WhisperEditBox" inherits="InputBoxTemplate">
+						<Scripts>
+							<OnEscapePressed>self:ClearFocus()</OnEscapePressed>
+							<OnLoad>self:SetAutoFocus(0)</OnLoad>
+							<OnEnterPressed>
+						GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
+						GSXWhisperCheck:SetChecked(1); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(nil); GearScore_SendReport()
+					</OnEnterPressed>
+						</Scripts>
+						<Size>
+							<AbsDimension x="100" y="32" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="38" y="-232" />
+							</Anchor>
+						</Anchors>
+					</EditBox>
+					<EditBox name="GSX_ChannelEditBox" inherits="InputBoxTemplate">
+						<Scripts>
+							<OnEscapePressed>self:ClearFocus()</OnEscapePressed>
+							<OnLoad>self:SetAutoFocus(0)</OnLoad>
+							<OnEnterPressed>
+						GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
+						GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(1); GearScore_SendReport()
+					</OnEnterPressed>
+						</Scripts>
+						<Size>
+							<AbsDimension x="100" y="32" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="38" y="-296" />
+							</Anchor>
+						</Anchors>
+					</EditBox>
+
+					<Button name="GSXButton1" inherits="UIPanelButtonTemplate" text="Spam">
+						<Scripts>
+							<OnClick>
+						GearScore_SendReport()
+					</OnClick>
+						</Scripts>
+						<Size>
+							<AbsDimension x="75" y="23" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="53" y="-385" />
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="GSReportFrameCloseButton" inherits="UIPanelCloseButton">
+						<Anchors>
+							<Anchor point="CENTER" relativeTo="GS_ReportFrame" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="-22" y="-22" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+	                        self:SetFrameLevel(self:GetFrameLevel() + 4);
+	                    </OnLoad>
+							<OnClick>
+						GS_ReportFrame:Hide();
+					</OnClick>
+						</Scripts>
+					</Button>
+
+					<CheckButton name="GSXSayCheck" inherits="UICheckButtonTemplate" text="CheckButton1">
+						<Scripts>
+							<OnClick>
+						if ( self:GetChecked() ) then 
+							GSXSayCheck:SetChecked(1); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
+							GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(nil);
+						else
+							self:SetChecked(1)
+						end
+					</OnClick>
+						</Scripts>
+						<Size>
+							<AbsDimension x="16" y="16" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="151" y="-50" />
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="GSXPartyCheck" inherits="UICheckButtonTemplate" text="CheckButton2">
+						<Scripts>
+							<OnClick>
+						if ( self:GetChecked() ) then 
+							GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(1); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
+							GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(nil);
+						else
+							self:SetChecked(1)
+						end
+					</OnClick>
+						</Scripts>
+						<Size>
+							<AbsDimension x="16" y="16" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="151" y="-80" />
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="GSXRaidCheck" inherits="UICheckButtonTemplate" text="CheckButton3">
+						<Scripts>
+							<OnClick>
+						if ( self:GetChecked() ) then 
+							GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(1); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
+							GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(nil);
+						else
+							self:SetChecked(1)
+						end
+					</OnClick>
+						</Scripts>
+						<Size>
+							<AbsDimension x="16" y="16" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="151" y="-106" />
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="GSXGuildCheck" inherits="UICheckButtonTemplate" text="CheckButton4">
+						<Scripts>
+							<OnClick>
+						if ( self:GetChecked() ) then 
+							GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(1); GSXOfficerCheck:SetChecked(nil); 
+							GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(nil);
+						else
+							self:SetChecked(1)
+						end
+					</OnClick>
+						</Scripts>
+						<Size>
+							<AbsDimension x="16" y="16" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="151" y="-132" />
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="GSXOfficerCheck" inherits="UICheckButtonTemplate" text="CheckButton5">
+						<Scripts>
+							<OnClick>
+						if ( self:GetChecked() ) then 
+							GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(1); 
+							GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(nil);
+						else
+							self:SetChecked(1)
+						end
+					</OnClick>
+						</Scripts>
+						<Size>
+							<AbsDimension x="16" y="16" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="151" y="-158" />
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="GSXWhisperTargetCheck" inherits="UICheckButtonTemplate" text="CheckButton6">
+						<Scripts>
+							<OnClick>
+						if ( self:GetChecked() ) then 
+							GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
+							GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(1); GSXChannelCheck:SetChecked(nil);
+						else
+							self:SetChecked(1)
+						end
+					</OnClick>
+						</Scripts>
+						<Size>
+							<AbsDimension x="16" y="16" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="151" y="-184" />
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="GSXWhisperCheck" inherits="UICheckButtonTemplate" text="CheckButton7">
+						<Scripts>
+							<OnClick>
+						if ( self:GetChecked() ) then 
+							GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
+							GSXWhisperCheck:SetChecked(1); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(nil);
+						else
+							self:SetChecked(1)
+						end
+					</OnClick>
+						</Scripts>
+						<Size>
+							<AbsDimension x="16" y="16" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="151" y="-210" />
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="GSXChannelCheck" inherits="UICheckButtonTemplate" text="CheckButton8">
+						<Scripts>
+							<OnClick>
+						if ( self:GetChecked() ) then 
+							GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
+							GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(1);
+						else
+							self:SetChecked(1)
+						end
+					</OnClick>
+						</Scripts>
+						<Size>
+							<AbsDimension x="16" y="16" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset x="151" y="-274" />
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+				</Frames>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="GSXFontString1" inherits="GameFontNormalLarge" text="Report To:" justifyH="LEFT">
+							<Size>
+								<AbsDimension x="102" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="19" y="-24" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="GSXFontString2" inherits="GameFontNormal" text="Say" justifyH="LEFT">
+							<Size>
+								<AbsDimension x="80" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="19" y="-50" />
+								</Anchor>
+							</Anchors>
+							<Color r="1" g="1" b="1" />
+						</FontString>
+						<FontString name="GSXFontString3" inherits="GameFontNormal" text="Party" justifyH="LEFT">
+							<Size>
+								<AbsDimension x="80" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="19" y="-76" />
+								</Anchor>
+							</Anchors>
+							<Color r="1" g="1" b="1" />
+						</FontString>
+						<FontString name="GSXFontString4" inherits="GameFontNormal" text="Raid" justifyH="LEFT">
+							<Size>
+								<AbsDimension x="80" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="19" y="-102" />
+								</Anchor>
+							</Anchors>
+							<Color r="1" g="1" b="1" />
+						</FontString>
+						<FontString name="GSXFontString5" inherits="GameFontNormal" text="Guild" justifyH="LEFT">
+							<Size>
+								<AbsDimension x="80" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="19" y="-128" />
+								</Anchor>
+							</Anchors>
+							<Color r="1" g="1" b="1" />
+						</FontString>
+						<FontString name="GSXFontString6" inherits="GameFontNormal" text="Officer" justifyH="LEFT">
+							<Size>
+								<AbsDimension x="80" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="19" y="-154" />
+								</Anchor>
+							</Anchors>
+							<Color r="1" g="1" b="1" />
+						</FontString>
+						<FontString name="GSXFontString7" inherits="GameFontNormal" text="Whisper Target" justifyH="LEFT">
+							<Size>
+								<AbsDimension x="105" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="19" y="-180" />
+								</Anchor>
+							</Anchors>
+							<Color r="1" g="1" b="1" />
+						</FontString>
+						<FontString name="FontString8" inherits="GameFontNormal" text="Whisper:" justifyH="LEFT">
+							<Size>
+								<AbsDimension x="80" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="19" y="-206" />
+								</Anchor>
+							</Anchors>
+							<Color r="1" g="1" b="1" />
+						</FontString>
+						<FontString name="GSXFontString9" inherits="GameFontNormal" text="Channel #:" justifyH="LEFT">
+							<Size>
+								<AbsDimension x="80" y="20" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="19" y="-270" />
+								</Anchor>
+							</Anchors>
+							<Color r="1" g="1" b="1" />
+						</FontString>
+
+					</Layer>
+				</Layers>
+			</Frame>
+
+		</Frames>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="GSDatabaseInfoString" inherits="GameFontNormal" text="Database: Unknown. (Appox. ??kb)" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="30" y="-434" />
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<StatusBar name="GS_SpecBarTemplate" virtual="true" drawLayer="BACKGROUND" minValue="0" maxValue="100" defaultValue="50">
 		<Size>
-			<AbsDimension x="187" y="427" />
+			<AbsDimension x="181" y="13" />
 		</Size>
 		<Anchors>
-			<Anchor point="TOPLEFT">
-				<Offset x="820" y="0" />
+			<Anchor point="LEFT">
+				<Offset>
+					<AbsDimension x="-100" y="0" />
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentPercentText" inherits="GameFontNormal" text="Elmental">
+					<Size>
+						<AbsDimension x="199" y="20" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="0" y="5" />
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+
+			<Layer level="ARTWORK">
+
+				<Texture name="$parentLeftTexture" file="Interface\PaperDollInfoFrame\UI-Character-ReputationBar">
+					<Size>
+						<AbsDimension x="102" y="21" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT">
+							<Offset>
+								<AbsDimension x="0" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.691" right="1.0" top="0.047" bottom="0.281" />
+				</Texture>
+				<Texture name="$parentRightTexture" file="Interface\PaperDollInfoFrame\UI-Character-ReputationBar">
+					<Size>
+						<AbsDimension x="82" y="21" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentLeftTexture" relativePoint="RIGHT">
+							<Offset>
+								<AbsDimension x="00" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.0" right="0.164" top="0.3906" bottom="0.625" />
+				</Texture>
+
+			</Layer>
+		</Layers>
+		<BarTexture file="Interface\PaperDollInfoFrame\UI-Character-Skills-Bar" />
+		<BarColor r=".25" g=".25" b=".75" />
+	</StatusBar>
+
+	<Frame name="GS_GearCheckFrame" parent="UIParent" toplevel="true" movable="true" enableMouse="true">
+		<Size>
+			<AbsDimension x="600" y="450" />
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER">
+				<Offset x="0" y="0" />
 			</Anchor>
 		</Anchors>
 		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
@@ -1796,455 +2666,15 @@
 				<AbsValue val="32" />
 			</EdgeSize>
 		</Backdrop>
-		<Frames>
-		<Slider name="GS_Slider" inherits="OptionsSliderTemplate">
-			<Size>
-				<AbsDimension x="144" y="16"/>
-			</Size>
-			<Anchors>
-				<Anchor point="TOPLEFT">
-			<Offset><AbsDimension x="18" y="-350"/></Offset>
-			</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnLoad>
-					getglobal(self:GetName().."High"):SetText("25");
-					getglobal(self:GetName().."Low"):SetText("1");
-					self:SetMinMaxValues(1,25);
-					self:SetValueStep(1);
-				</OnLoad>
-				<OnValueChanged> 
-					getglobal(self:GetName().."Text"):SetText("Top: "..GS_Slider:GetValue())
-					if ( GS_Settings ) then GS_Settings["Slider"] = GS_Slider:GetValue(); end
-				</OnValueChanged>
-				</Scripts>
-		</Slider>
-		
-			<EditBox name="GSX_WhisperEditBox" inherits="InputBoxTemplate">
-				<Scripts>
-					<OnEscapePressed>self:ClearFocus()</OnEscapePressed>
-					<OnLoad>self:SetAutoFocus(0)</OnLoad>
-					<OnEnterPressed>
-						GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
-						GSXWhisperCheck:SetChecked(1); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(nil); GearScore_SendReport()
-					</OnEnterPressed>
-				</Scripts>			
-				<Size>
-					<AbsDimension x="100" y="32" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="38" y="-232" />
-					</Anchor>
-				</Anchors>
-			</EditBox>
-			<EditBox name="GSX_ChannelEditBox" inherits="InputBoxTemplate">
-				<Scripts>
-					<OnEscapePressed>self:ClearFocus()</OnEscapePressed>
-					<OnLoad>self:SetAutoFocus(0)</OnLoad>
-					<OnEnterPressed>
-						GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
-						GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(1); GearScore_SendReport()
-					</OnEnterPressed>
-				</Scripts>			
-				<Size>
-					<AbsDimension x="100" y="32" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="38" y="-296" />
-					</Anchor>
-				</Anchors>
-			</EditBox>
-
-			<Button name="GSXButton1" inherits="UIPanelButtonTemplate" text="Spam">
-				<Scripts>
-					<OnClick>
-						GearScore_SendReport()
-					</OnClick>
-				</Scripts>
-				<Size>
-					<AbsDimension x="75" y="23" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="53" y="-385" />
-					</Anchor>
-				</Anchors>
-			</Button>
-	            <Button name="GSReportFrameCloseButton" inherits="UIPanelCloseButton">
-        	        <Anchors>
-                	    <Anchor point="CENTER" relativeTo="GS_ReportFrame" relativePoint="TOPRIGHT">
-	                        <Offset>
-                        	    <AbsDimension x="-22" y="-22"/>
-        	                </Offset>
-	                    </Anchor>
-	                </Anchors>
-	                <Scripts>
-	                    <OnLoad>
-	                        self:SetFrameLevel(self:GetFrameLevel() + 4);
-	                    </OnLoad>
-					<OnClick>
-						GS_ReportFrame:Hide();
-					</OnClick>
-	                </Scripts>
-	            </Button>
-
-			<CheckButton name="GSXSayCheck" inherits="UICheckButtonTemplate" text="CheckButton1">
-				<Scripts>
-					<OnClick>
-						if ( self:GetChecked() ) then 
-							GSXSayCheck:SetChecked(1); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
-							GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(nil);
-						else
-							self:SetChecked(1)
-						end
-					</OnClick>
-				</Scripts>
-				<Size>
-					<AbsDimension x="16" y="16" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="151" y="-50" />
-					</Anchor>
-				</Anchors>
-			</CheckButton>
-			<CheckButton name="GSXPartyCheck" inherits="UICheckButtonTemplate" text="CheckButton2">
-				<Scripts>
-					<OnClick>
-						if ( self:GetChecked() ) then 
-							GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(1); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
-							GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(nil);
-						else
-							self:SetChecked(1)
-						end
-					</OnClick>
-				</Scripts>			
-				<Size>
-					<AbsDimension x="16" y="16" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="151" y="-80" />
-					</Anchor>
-				</Anchors>
-			</CheckButton>
-			<CheckButton name="GSXRaidCheck" inherits="UICheckButtonTemplate" text="CheckButton3">
-				<Scripts>
-					<OnClick>
-						if ( self:GetChecked() ) then 
-							GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(1); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
-							GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(nil);
-						else
-							self:SetChecked(1)
-						end
-					</OnClick>
-				</Scripts>			
-				<Size>
-					<AbsDimension x="16" y="16" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="151" y="-106" />
-					</Anchor>
-				</Anchors>
-			</CheckButton>
-			<CheckButton name="GSXGuildCheck" inherits="UICheckButtonTemplate" text="CheckButton4">
-				<Scripts>
-					<OnClick>
-						if ( self:GetChecked() ) then 
-							GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(1); GSXOfficerCheck:SetChecked(nil); 
-							GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(nil);
-						else
-							self:SetChecked(1)
-						end
-					</OnClick>
-				</Scripts>			
-				<Size>
-					<AbsDimension x="16" y="16" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="151" y="-132" />
-					</Anchor>
-				</Anchors>
-			</CheckButton>
-			<CheckButton name="GSXOfficerCheck" inherits="UICheckButtonTemplate" text="CheckButton5">
-				<Scripts>
-					<OnClick>
-						if ( self:GetChecked() ) then 
-							GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(1); 
-							GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(nil);
-						else
-							self:SetChecked(1)
-						end
-					</OnClick>
-				</Scripts>			
-				<Size>
-					<AbsDimension x="16" y="16" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="151" y="-158" />
-					</Anchor>
-				</Anchors>
-			</CheckButton>
-			<CheckButton name="GSXWhisperTargetCheck" inherits="UICheckButtonTemplate" text="CheckButton6">
-				<Scripts>
-					<OnClick>
-						if ( self:GetChecked() ) then 
-							GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
-							GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(1); GSXChannelCheck:SetChecked(nil);
-						else
-							self:SetChecked(1)
-						end
-					</OnClick>
-				</Scripts>			
-				<Size>
-					<AbsDimension x="16" y="16" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="151" y="-184" />
-					</Anchor>
-				</Anchors>
-			</CheckButton>
-			<CheckButton name="GSXWhisperCheck" inherits="UICheckButtonTemplate" text="CheckButton7">
-				<Scripts>
-					<OnClick>
-						if ( self:GetChecked() ) then 
-							GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
-							GSXWhisperCheck:SetChecked(1); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(nil);
-						else
-							self:SetChecked(1)
-						end
-					</OnClick>
-				</Scripts>			
-				<Size>
-					<AbsDimension x="16" y="16" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="151" y="-210" />
-					</Anchor>
-				</Anchors>
-			</CheckButton>
-			<CheckButton name="GSXChannelCheck" inherits="UICheckButtonTemplate" text="CheckButton8">
-				<Scripts>
-					<OnClick>
-						if ( self:GetChecked() ) then 
-							GSXSayCheck:SetChecked(nil); GSXPartyCheck:SetChecked(nil); GSXRaidCheck:SetChecked(nil); GSXGuildCheck:SetChecked(nil); GSXOfficerCheck:SetChecked(nil); 
-							GSXWhisperCheck:SetChecked(nil); GSXWhisperTargetCheck:SetChecked(nil); GSXChannelCheck:SetChecked(1);
-						else
-							self:SetChecked(1)
-						end
-					</OnClick>
-				</Scripts>			
-				<Size>
-					<AbsDimension x="16" y="16" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="151" y="-274" />
-					</Anchor>
-				</Anchors>
-			</CheckButton>
-		</Frames>
-		<Layers>
-			<Layer level="OVERLAY">
-				<FontString name="GSXFontString1" inherits="GameFontNormalLarge" text="Report To:" justifyH="LEFT">
-					<Size>
-						<AbsDimension x="102" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="19" y="-24" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="GSXFontString2" inherits="GameFontNormal" text="Say" justifyH="LEFT">
-					<Size>
-						<AbsDimension x="80" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="19" y="-50" />
-						</Anchor>
-					</Anchors>
-					<Color r="1" g="1" b="1" />
-				</FontString>
-				<FontString name="GSXFontString3" inherits="GameFontNormal" text="Party" justifyH="LEFT">
-					<Size>
-						<AbsDimension x="80" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="19" y="-76" />
-						</Anchor>
-					</Anchors>
-					<Color r="1" g="1" b="1" />
-				</FontString>
-				<FontString name="GSXFontString4" inherits="GameFontNormal" text="Raid" justifyH="LEFT">
-					<Size>
-						<AbsDimension x="80" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="19" y="-102" />
-						</Anchor>
-					</Anchors>
-					<Color r="1" g="1" b="1" />
-				</FontString>
-				<FontString name="GSXFontString5" inherits="GameFontNormal" text="Guild" justifyH="LEFT">
-					<Size>
-						<AbsDimension x="80" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="19" y="-128" />
-						</Anchor>
-					</Anchors>
-					<Color r="1" g="1" b="1" />
-				</FontString>
-				<FontString name="GSXFontString6" inherits="GameFontNormal" text="Officer" justifyH="LEFT">
-					<Size>
-						<AbsDimension x="80" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="19" y="-154" />
-						</Anchor>
-					</Anchors>
-					<Color r="1" g="1" b="1" />
-				</FontString>
-				<FontString name="GSXFontString7" inherits="GameFontNormal" text="Whisper Target" justifyH="LEFT">
-					<Size>
-						<AbsDimension x="105" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="19" y="-180" />
-						</Anchor>
-					</Anchors>
-					<Color r="1" g="1" b="1" />
-				</FontString>
-				<FontString name="FontString8" inherits="GameFontNormal" text="Whisper:" justifyH="LEFT">
-					<Size>
-						<AbsDimension x="80" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="19" y="-206" />
-						</Anchor>
-					</Anchors>
-					<Color r="1" g="1" b="1" />
-				</FontString>
-				<FontString name="GSXFontString9" inherits="GameFontNormal" text="Channel #:" justifyH="LEFT">
-					<Size>
-						<AbsDimension x="80" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="19" y="-270" />
-						</Anchor>
-					</Anchors>
-					<Color r="1" g="1" b="1" />
-				</FontString>
-
-			</Layer>
-		</Layers>
-	</Frame>
-									
-</Frames>
-		<Layers>
-			<Layer level="OVERLAY">
-				<FontString name="GSDatabaseInfoString" inherits="GameFontNormal" text="Database: Unknown. (Appox. ??kb)" justifyH="LEFT">
-				<Anchors><Anchor point="TOPLEFT"><Offset x="30" y="-434" /></Anchor></Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-</Frame>
-
-<StatusBar name="GS_SpecBarTemplate" virtual = "true" drawLayer="BACKGROUND" minValue="0" maxValue="100" defaultValue="50">
-				<Size>
-					<AbsDimension x="181" y="13"/>
-				</Size>
-				<Anchors>
-					<Anchor point="LEFT">
-						<Offset>
-							<AbsDimension x="-100" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-				<Layers>
-			<Layer level="OVERLAY">
-				<FontString name="$parentPercentText" inherits="GameFontNormal" text="Elmental">
-					<Size>
-						<AbsDimension x="199" y="20" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="0" y="5" />
-						</Anchor>
-					</Anchors>
-				</FontString> 
-			</Layer>
-					
-					<Layer level="ARTWORK">
-
-						<Texture name="$parentLeftTexture" file="Interface\PaperDollInfoFrame\UI-Character-ReputationBar">
-							<Size>
-								<AbsDimension x="102" y="21"/>
-							</Size>
-							<Anchors>
-								<Anchor point="LEFT">
-									<Offset>
-										<AbsDimension x="0" y="0"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-							<TexCoords left="0.691" right="1.0" top="0.047" bottom="0.281"/>
-						</Texture>
-						<Texture name="$parentRightTexture" file="Interface\PaperDollInfoFrame\UI-Character-ReputationBar">
-							<Size>
-								<AbsDimension x="82" y="21"/>
-							</Size>
-							<Anchors>
-								<Anchor point="LEFT" relativeTo="$parentLeftTexture" relativePoint="RIGHT">
-									<Offset>
-										<AbsDimension x="00" y="0"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-							<TexCoords left="0.0" right="0.164" top="0.3906" bottom="0.625"/>
-						</Texture>
-
-					</Layer>
-				</Layers>
-				<BarTexture file="Interface\PaperDollInfoFrame\UI-Character-Skills-Bar"/>
-				<BarColor r=".25" g=".25" b=".75"/>
-			</StatusBar>
-
-<Frame name="GS_GearCheckFrame" parent="UIParent" toplevel="true" movable="true" enableMouse="true">
-		<Size><AbsDimension x="600" y="450" /></Size>
-		<Anchors><Anchor point="CENTER"><Offset x="0" y="0" /></Anchor></Anchors>
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-			<BackgroundInsets><AbsInset left="11" right="12" top="12" bottom="11" /></BackgroundInsets>
-			<TileSize><AbsValue val="32" /></TileSize>
-			<EdgeSize><AbsValue val="32" /></EdgeSize>
-		</Backdrop>
-	<Scripts>
-		<OnLoad>
+		<Scripts>
+			<OnLoad>
 			self:Hide()
 						PanelTemplates_SetNumTabs(GS_DisplayFrame, 3)
 						PanelTemplates_SetTab(GS_DisplayFrame, 1)
 						PanelTemplates_SetNumTabs(GS_DatabaseFrame, 4)
 						PanelTemplates_SetTab(GS_DatabaseFrame, 1)
 		</OnLoad>
-	</Scripts>
-	<Frames>
-	
-	</Frames>
-</Frame>
+		</Scripts>
+		<Frames></Frames>
+	</Frame>
 </Ui>

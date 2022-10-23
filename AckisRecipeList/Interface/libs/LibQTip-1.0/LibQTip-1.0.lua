@@ -152,7 +152,7 @@ local function ReleaseFrame(frame)
 	frame:Hide()
 	frame:SetParent(nil)
 	frame:ClearAllPoints()
-	frame:SetBackdrop(nil)
+	-- frame:SetBackdrop(nil)
 	ClearFrameScripts(frame)
 	tinsert(frameHeap, frame)
 	--[===[@debug@
@@ -394,7 +394,7 @@ function ReleaseCell(cell)
 	cell:Hide()
 	cell:ClearAllPoints()
 	cell:SetParent(nil)
-	cell:SetBackdrop(nil)
+	-- cell:SetBackdrop(nil)
 	ClearFrameScripts(cell)
 	cell._font, cell._justification, cell._colSpan,	cell._line, cell._column = nil
 
@@ -432,14 +432,14 @@ function InitializeTooltip(tooltip, key)
 	----------------------------------------------------------------------
 	-- (Re)set frame settings
 	----------------------------------------------------------------------
-	local backdrop = GameTooltip:GetBackdrop()
+	-- local backdrop = GameTooltip:GetBackdrop()
 
-	tooltip:SetBackdrop(backdrop)
+	-- tooltip:SetBackdrop(backdrop)
 
-	if backdrop then
-		tooltip:SetBackdropColor(GameTooltip:GetBackdropColor())
-		tooltip:SetBackdropBorderColor(GameTooltip:GetBackdropBorderColor())
-	end
+	-- if backdrop then
+	-- 	tooltip:SetBackdropColor(GameTooltip:GetBackdropColor())
+	-- 	tooltip:SetBackdropBorderColor(GameTooltip:GetBackdropBorderColor())
+	-- end
 	tooltip:SetScale(GameTooltip:GetScale())
 	tooltip:SetAlpha(1)
 	tooltip:SetFrameStrata("TOOLTIP")
@@ -634,14 +634,14 @@ function tipPrototype:UpdateScrolling(maxheight)
 		self.scrollFrame:SetPoint("RIGHT", self, "RIGHT", -(TOOLTIP_PADDING + 20), 0)
 
 		if not self.slider then
-			local slider = CreateFrame("Slider", nil, self)
+			local slider = CreateFrame("Slider", nil, self, "BackdropTemplate")
 
 			self.slider = slider
 
 			slider:SetOrientation("VERTICAL")
 			slider:SetPoint("TOPRIGHT", self, "TOPRIGHT", -TOOLTIP_PADDING, -TOOLTIP_PADDING)
 			slider:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -TOOLTIP_PADDING, TOOLTIP_PADDING)
-			slider:SetBackdrop(sliderBackdrop)
+			-- slider:SetBackdrop(sliderBackdrop)
 			slider:SetThumbTexture([[Interface\Buttons\UI-SliderBar-Button-Vertical]])
 			slider:SetMinMaxValues(0, 1)
 			slider:SetValueStep(1)
@@ -1008,8 +1008,8 @@ function tipPrototype:AddSeparator(height, r, g, b, a)
 	SetTooltipSize(self, self.width, self.height + height)
 	line.height = height
 	line:SetHeight(height)
-	line:SetBackdrop(GenericBackdrop)
-	line:SetBackdropColor(r or color.r, g or color.g, b or color.b, a or 1)
+	-- line:SetBackdrop(GenericBackdrop)
+	-- line:SetBackdropColor(r or color.r, g or color.g, b or color.b, a or 1)
 	return lineNum, colNum
 end
 
@@ -1018,8 +1018,8 @@ function tipPrototype:SetCellColor(lineNum, colNum, r, g, b, a)
 
 	if cell then
 		local sr, sg, sb, sa = self:GetBackdropColor()
-		cell:SetBackdrop(GenericBackdrop)
-		cell:SetBackdropColor(r or sr, g or sg, b or sb, a or sa)
+		-- cell:SetBackdrop(GenericBackdrop)
+		-- cell:SetBackdropColor(r or sr, g or sg, b or sb, a or sa)
 	end
 end
 
@@ -1028,8 +1028,8 @@ function tipPrototype:SetColumnColor(colNum, r, g, b, a)
 
 	if column then
 		local sr, sg, sb, sa = self:GetBackdropColor()
-		column:SetBackdrop(GenericBackdrop)
-		column:SetBackdropColor(r or sr, g or sg, b or sb, a or sa)
+		-- column:SetBackdrop(GenericBackdrop)
+		-- column:SetBackdropColor(r or sr, g or sg, b or sb, a or sa)
 	end
 end
 
@@ -1038,8 +1038,8 @@ function tipPrototype:SetLineColor(lineNum, r, g, b, a)
 
 	if line then
 		local sr, sg, sb, sa = self:GetBackdropColor()
-		line:SetBackdrop(GenericBackdrop)
-		line:SetBackdropColor(r or sr, g or sg, b or sb, a or sa)
+		-- line:SetBackdrop(GenericBackdrop)
+		-- line:SetBackdropColor(r or sr, g or sg, b or sb, a or sa)
 	end
 end
 

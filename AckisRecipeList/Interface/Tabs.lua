@@ -80,7 +80,6 @@ function private.InitializeTabs()
 		MainPanel.current_tab = id_num
 
 		ListFrame:Update(nil, false)
-		PlaySound("igCharacterInfoTab")
 	end
 
 	-- Expands or collapses a list entry in the current active tab.

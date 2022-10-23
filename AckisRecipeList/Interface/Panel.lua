@@ -294,7 +294,6 @@ function private.InitializeFrame()
 				self.filter_reset:Hide()
 				self.filter_menu:Hide()
 
-				PlaySound("igCharacterInfoClose")
 
 				self:SetWidth(self.normal_width)
 				self:SetHitRectInsets(0, 35, 0, 53)
@@ -333,7 +332,6 @@ function private.InitializeFrame()
 				end
 				MainPanel.filter_reset:Show()
 
-				PlaySound("igCharacterInfoOpen")
 
 				self:SetWidth(self.expanded_width)
 				self:SetHitRectInsets(0, 90, 0, 53)
@@ -462,7 +460,6 @@ function private.InitializeFrame()
 				    local is_shown = trade_frame:IsVisible()
 				    local sfx
 
-				    PlaySound("igCharacterNPCSelect")
 
 				    -- If not shown, save the current sound effects setting then set it to 0.
 				    if not is_shown then
@@ -958,7 +955,7 @@ function private.InitializeFrame()
 	-- Create MainPanel.progress_bar and set its scripts
 	-------------------------------------------------------------------------------
 	do
-		local progress_bar = CreateFrame("StatusBar", nil, MainPanel)
+		local progress_bar = CreateFrame("StatusBar", nil, MainPanel, "BackdropTemplate")
 		progress_bar:SetWidth(216)
 		progress_bar:SetHeight(18)
 		progress_bar:SetPoint("BOTTOMLEFT", MainPanel, 17, 80)
