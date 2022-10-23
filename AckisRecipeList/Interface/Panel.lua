@@ -1,9 +1,33 @@
--- ----------------------------------------------------------------------------
+--[[
+************************************************************************
+Panel.lua
+************************************************************************
+File date: 2010-07-15T11:57:44Z
+File hash: be2512a
+Project hash: fc58e9f
+Project version: v2.01-14-gfc58e9f
+************************************************************************
+Please see http://www.wowace.com/addons/arl/ for more information.
+************************************************************************
+This source code is released under All Rights Reserved.
+************************************************************************
+@class file
+@name Panel.lua
+************************************************************************
+]]--
+
+-------------------------------------------------------------------------------
 -- Localized Lua globals.
--- ----------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+local _G = getfenv(0)
+
+local string = _G.string
+local sformat = string.format
+local strlower = string.lower
+local smatch = string.match
+
 local select = _G.select
 
-local math = _G.math
 local table = _G.table
 
 local ipairs, pairs = _G.ipairs, _G.pairs
@@ -11,22 +35,54 @@ local ipairs, pairs = _G.ipairs, _G.pairs
 local tonumber = _G.tonumber
 local tostring = _G.tostring
 
-local SOUNDKIT = SOUNDKIT
+-------------------------------------------------------------------------------
+-- Localized Blizzard API.
+-------------------------------------------------------------------------------
+local GetItemQualityColor = _G.GetItemQualityColor
 
--- ----------------------------------------------------------------------------
+-- GLOBALS: CreateFrame, GameTooltip, UIParent
+
+-------------------------------------------------------------------------------
 -- AddOn namespace.
--- ----------------------------------------------------------------------------
-local FOLDER_NAME, private	= ...
+-------------------------------------------------------------------------------
+local LibStub = LibStub
 
-local LibStub = _G.LibStub
-local addon	= LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
-local L		= LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
+local MODNAME	= "Ackis Recipe List"
+local addon	= LibStub("AceAddon-3.0"):GetAddon(MODNAME)
+
+local BFAC	= LibStub("LibBabble-Faction-3.0"):GetLookupTable()
+local L		= LibStub("AceLocale-3.0"):GetLocale(MODNAME)
+
+-- Set up the private intra-file namespace.
+local private	= select(2, ...)
+
+local Player	= private.Player
+
+-------------------------------------------------------------------------------
+-- Upvalues
+-------------------------------------------------------------------------------
+local AcquireTable = private.AcquireTable
+local ReleaseTable = private.ReleaseTable
+local SetTextColor = private.SetTextColor
+local GenericCreateButton = private.GenericCreateButton
+local SetTooltipScripts = private.SetTooltipScripts
+
+local A = private.acquire_types
+
+-------------------------------------------------------------------------------
+-- Constants
+-------------------------------------------------------------------------------
+local ORDERED_PROFESSIONS	= private.ordered_professions
+
+local FACTION_HORDE		= BFAC["Horde"]
+local FACTION_ALLIANCE		= BFAC["Alliance"]
+local FACTION_NEUTRAL		= BFAC["Neutral"]
 
 function private.InitializeFrame()
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	-- Create the MainPanel and set its values
-	-- ----------------------------------------------------------------------------
-	local MainPanel = _G.CreateFrame("Frame", "ARL_MainPanel", _G.UIParent, BackdropTemplateMixin and "BackdropTemplate")
+	-------------------------------------------------------------------------------
+	local MainPanel = CreateFrame("Frame", "ARL_MainPanel", UIParent)
 
 	-- The panel width changes when contracting and expanding - store it for later use.
 	MainPanel.normal_width = 384
@@ -47,31 +103,31 @@ function private.InitializeFrame()
 	MainPanel.is_expanded = false
 
 	-- Let the user banish the MainPanel with the ESC key.
-	table.insert(_G.UISpecialFrames, "ARL_MainPanel")
+	table.insert(UISpecialFrames, "ARL_MainPanel")
 	addon.Frame = MainPanel
 
 	do
-		local top_left = MainPanel:CreateTexture(nil, "OVERLAY")
+		local top_left = MainPanel:CreateTexture(nil, "ARTWORK")
 		top_left:SetTexture("Interface\\QuestFrame\\UI-QuestLog-TopLeft")
 		top_left:SetPoint("TOPLEFT", MainPanel, "TOPLEFT", 0, 0)
 		MainPanel.top_left = top_left
 
-		local top_right = MainPanel:CreateTexture(nil, "OVERLAY")
+		local top_right = MainPanel:CreateTexture(nil, "ARTWORK")
 		top_right:SetTexture("Interface\\QuestFrame\\UI-QuestLog-TopRight")
 		top_right:SetPoint("TOPRIGHT", MainPanel, "TOPRIGHT", 0, 0)
 		MainPanel.top_right = top_right
 
-		local bottom_left = MainPanel:CreateTexture(nil, "OVERLAY")
+		local bottom_left = MainPanel:CreateTexture(nil, "ARTWORK")
 		bottom_left:SetTexture("Interface\\QuestFrame\\UI-QuestLog-BotLeft")
 		bottom_left:SetPoint("BOTTOMLEFT", MainPanel, "BOTTOMLEFT", 0, 0)
 		MainPanel.bottom_left = bottom_left
 
-		local bottom_right = MainPanel:CreateTexture(nil, "OVERLAY")
+		local bottom_right = MainPanel:CreateTexture(nil, "ARTWORK")
 		bottom_right:SetTexture("Interface\\QuestFrame\\UI-QuestLog-BotRight")
 		bottom_right:SetPoint("BOTTOMRIGHT", MainPanel, "BOTTOMRIGHT", 0, 0)
 		MainPanel.bottom_right = bottom_right
 
-		local title_bar = MainPanel:CreateFontString(nil, "OVERLAY")
+		local title_bar = MainPanel:CreateFontString(nil, "ARTWORK")
 		title_bar:SetFontObject("GameFontHighlightSmall")
 		title_bar:SetPoint("TOPLEFT", MainPanel, "TOPLEFT", 20, -20)
 		title_bar:SetPoint("TOPRIGHT", MainPanel, "TOPRIGHT", -40, -20)
@@ -81,109 +137,92 @@ function private.InitializeFrame()
 		MainPanel:Hide()
 	end	-- do block
 
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	-- MainPanel scripts/functions.
-	-- ----------------------------------------------------------------------------
-	MainPanel:SetScript("OnHide", function(self)
-		private.DismissDialogs()
-	end)
+	-------------------------------------------------------------------------------
+	MainPanel:SetScript("OnHide",
+			    function(self)
+				    for spell_id, recipe in pairs(private.recipe_list) do
+					    recipe:RemoveState("RELEVANT")
+					    recipe:RemoveState("VISIBLE")
+				    end
+				    addon:ClosePopups()
+			    end)
 
 	MainPanel:SetScript("OnMouseDown", MainPanel.StartMoving)
 
-	MainPanel:SetScript("OnMouseUp", function(self, button)
-		self:StopMovingOrSizing()
+	MainPanel:SetScript("OnMouseUp",
+			    function(self, button)
+				    self:StopMovingOrSizing()
 
-		local opts = addon.db.profile.frameopts
-		local from, _, to, x, y = self:GetPoint()
+				    local opts = addon.db.profile.frameopts
+				    local from, _, to, x, y = self:GetPoint()
 
-		opts.anchorFrom = from
-		opts.anchorTo = to
+				    opts.anchorFrom = from
+				    opts.anchorTo = to
 
-		if self.is_expanded then
-			if opts.anchorFrom == "TOPLEFT" or opts.anchorFrom == "LEFT" or opts.anchorFrom == "BOTTOMLEFT" then
-				opts.offsetx = x
-			elseif opts.anchorFrom == "TOP" or opts.anchorFrom == "CENTER" or opts.anchorFrom == "BOTTOM" then
-				opts.offsetx = x - 151 / 2
-			elseif opts.anchorFrom == "TOPRIGHT" or opts.anchorFrom == "RIGHT" or opts.anchorFrom == "BOTTOMRIGHT" then
-				opts.offsetx = x - 151
-			end
-		else
-			opts.offsetx = x
-		end
-		opts.offsety = y
-	end)
+				    if self.is_expanded then
+					    if opts.anchorFrom == "TOPLEFT" or opts.anchorFrom == "LEFT" or opts.anchorFrom == "BOTTOMLEFT" then
+						    opts.offsetx = x
+					    elseif opts.anchorFrom == "TOP" or opts.anchorFrom == "CENTER" or opts.anchorFrom == "BOTTOM" then
+						    opts.offsetx = x - 151/2
+					    elseif opts.anchorFrom == "TOPRIGHT" or opts.anchorFrom == "RIGHT" or opts.anchorFrom == "BOTTOMRIGHT" then
+						    opts.offsetx = x - 151
+					    end
+				    else
+					    opts.offsetx = x
+				    end
+				    opts.offsety = y
+			    end)
 
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	-- Displays the main GUI frame.
-	-- ----------------------------------------------------------------------------
-	function MainPanel:Display(isTradeSkillLinked)
-		self.is_linked = isTradeSkillLinked
-		self.prof_button:SetTexture()
+	-------------------------------------------------------------------------------
+	function MainPanel:Display(profession, is_linked)
+		self.is_linked = is_linked
+
+		-------------------------------------------------------------------------------
+		-- Set the profession.
+		-------------------------------------------------------------------------------
+		local prev_profession = self.profession
+
+		if profession == private.mining_name then
+			self.profession = 11 -- Smelting
+			self.prof_name = profession
+		else
+			for index, name in ipairs(ORDERED_PROFESSIONS) do
+				if name == profession then
+					self.profession = index
+					break
+				end
+			end
+			self.prof_name = nil
+		end
+
+		if self.profession ~= prev_profession then
+			self.prev_profession = self.profession
+		end
+		self.prof_button:ChangeTexture(private.profession_textures[self.profession])
 
 		local editbox = self.search_editbox
-        if private.CurrentProfession ~= private.PreviousProfession then
+
+		if self.profession ~= self.prev_profession then
 			editbox.prev_search = nil
 		end
-
-		if editbox.prev_search then
-			editbox:SetText(editbox.prev_search)
-		end
-
-		-- The first time this function is called, everything in the expanded section of the MainPanel must be created.
-		if private.InitializeFilterPanel then
-			private.InitializeFilterPanel()
-        end
-        local currentProfession = private.CurrentProfession
-		local professionModule = currentProfession:Module()
-		local panel
-
-		if professionModule.InitializeItemFilters then
-			local panelName = "items_" .. currentProfession:Name():lower()
-			panel = self.filter_menu:CreateSubMenu(panelName)
-
-			self.filter_menu.item[panelName] = self.filter_menu[panelName]
-			self.filter_menu[panelName] = nil
-
-            professionModule:InitializeItemFilters(panel)
-		else
-			panel = self.filter_menu.item["items_" .. currentProfession:Name():lower()]
-		end
-		private.UpdateFilterMarks()
-
-		if panel then
-			self.menu_toggle_item.icon_texture:SetVertexColor(1, 1, 1)
-			self.menu_toggle_item.bg_texture:SetVertexColor(1, 1, 1)
-			self.menu_toggle_item:Enable()
-
-			if self.filter_menu.item:IsVisible() then
-				self.filter_menu.item:Hide()
-				self.filter_menu.item:Show()
-			end
-		else
-			self.menu_toggle_item.icon_texture:SetVertexColor(0.50, 0.50, 0.50)
-			self.menu_toggle_item.bg_texture:SetVertexColor(0.50, 0.50, 0.50)
-			self.menu_toggle_item:Disable()
-
-			if self.filter_menu.item:IsVisible() then
-				self.filter_menu.item:Hide()
-				self.menu_toggle_item:SetChecked(false)
-
-				self.menu_toggle_general:SetChecked(true)
-				self.filter_menu.general:Show()
-				self.filter_menu:Show()
-			end
-		end
+		editbox:SetText(editbox.prev_search or _G.SEARCH)
 
 		-- If there is no current tab, this is the first time the panel has been
 		-- shown so things must be initialized. In this case, MainPanel.list_frame:Update()
 		-- will be called by the tab's OnClick handler.
-		if self.current_tab then
-			self.list_frame:Update(nil, false)
-		else
-			local currentTab = self.tabs[addon.db.profile.current_tab]
-			currentTab:GetScript("OnClick")(currentTab)
+		if not self.current_tab then
+			local current_tab = self.tabs[addon.db.profile.current_tab]
+			local on_click = current_tab:GetScript("OnClick")
 
-			self.current_tab = currentTab
+			on_click(current_tab)
+
+			self.current_tab = addon.db.profile.current_tab
+		else
+			MainPanel.list_frame:Update(nil, false)
 		end
 		self.sort_button:SetTextures()
 		self.filter_toggle:SetTextures()
@@ -193,9 +232,9 @@ function private.InitializeFrame()
 	end
 
 	do
-		-- ----------------------------------------------------------------------------
+		-------------------------------------------------------------------------------
 		-- Restore the panel's position on the screen.
-		-- ----------------------------------------------------------------------------
+		-------------------------------------------------------------------------------
 		local function Reset_Position(self)
 			local opts = addon.db.profile.frameopts
 			local FixedOffsetX = opts.offsetx
@@ -222,7 +261,7 @@ function private.InitializeFrame()
 						FixedOffsetX = opts.offsetx + 151
 					end
 				end
-				self:SetPoint(opts.anchorFrom, _G.UIParent, opts.anchorTo, FixedOffsetX, opts.offsety)
+				self:SetPoint(opts.anchorFrom, UIParent, opts.anchorTo, FixedOffsetX, opts.offsety)
 			end
 			self:SetScale(addon.db.profile.frameopts.uiscale)
 		end
@@ -255,7 +294,7 @@ function private.InitializeFrame()
 				self.filter_reset:Hide()
 				self.filter_menu:Hide()
 
-				_G.PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE, "Master")
+				PlaySound("igCharacterInfoClose")
 
 				self:SetWidth(self.normal_width)
 				self:SetHitRectInsets(0, 35, 0, 53)
@@ -294,7 +333,7 @@ function private.InitializeFrame()
 				end
 				MainPanel.filter_reset:Show()
 
-				_G.PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN, "Master")
+				PlaySound("igCharacterInfoOpen")
 
 				self:SetWidth(self.expanded_width)
 				self:SetHitRectInsets(0, 90, 0, 53)
@@ -311,20 +350,20 @@ function private.InitializeFrame()
 			self.is_expanded = not self.is_expanded
 
 			self:ClearAllPoints()
-			self:SetPoint("BOTTOMLEFT", _G.UIParent, "BOTTOMLEFT", x, y)
+			self:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", x, y)
 			self:UpdateTitle()
 		end
 	end	-- do-block
 
 	function MainPanel:UpdateTitle()
-		local localizedProfessionName = private.CurrentProfession:LocalizedName()
+		local current_prof = ORDERED_PROFESSIONS[self.profession]
 
 		if not self.is_expanded then
-			self.title_bar:SetFormattedText(private.SetTextColor(private.BASIC_COLORS.normal.hex, "ARL (%s) - %s"), addon.version, localizedProfessionName)
+			self.title_bar:SetFormattedText(SetTextColor(private.basic_colors["normal"], "ARL (%s) - %s"), addon.version, current_prof)
 			return
 		end
-
 		local total, active = 0, 0
+
 		for filter, info in pairs(self.filter_menu.value_map) do
 			if info.svroot then
 				if info.svroot[filter] == true then
@@ -333,236 +372,218 @@ function private.InitializeFrame()
 				total = total + 1
 			end
 		end
-
-		self.title_bar:SetFormattedText(private.SetTextColor(private.BASIC_COLORS.normal.hex, "ARL (%s) - %s (%d/%d %s)"), addon.version, localizedProfessionName, active, total, _G.FILTERS)
+		self.title_bar:SetFormattedText(SetTextColor(private.basic_colors["normal"], "ARL (%s) - %s (%d/%d %s)"), addon.version, current_prof, active, total, _G.FILTERS)
 	end
 
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	-- Create the profession-cycling button and assign its values.
-	-- ----------------------------------------------------------------------------
-	local profession_cycler = _G.CreateFrame("Button", nil, MainPanel)
-	profession_cycler:SetSize(60, 60)
-	profession_cycler:SetPoint("TOPLEFT", 7, -6)
-	profession_cycler:SetHighlightTexture([[Interface\Cooldown\ping4]])
-	profession_cycler:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-	MainPanel.prof_button = profession_cycler
+	-------------------------------------------------------------------------------
+	local ProfCycle = CreateFrame("Button", nil, MainPanel, "UIPanelButtonTemplate")
+	ProfCycle:SetWidth(64)
+	ProfCycle:SetHeight(64)
+	ProfCycle:SetPoint("TOPLEFT", MainPanel, "TOPLEFT", 5, -4)
+	ProfCycle:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 
-	local profession_texture = MainPanel:CreateTexture("ARL_ProfessionButtonPortrait", "ARTWORK")
-	profession_texture:SetSize(60, 60)
-	profession_texture:SetPoint("TOPLEFT", 7, -6)
-	MainPanel.profession_texture = profession_texture
+	ProfCycle._normal = ProfCycle:CreateTexture(nil, "BACKGROUND")
+	ProfCycle._pushed = ProfCycle:CreateTexture(nil, "BACKGROUND")
+	ProfCycle._disabled = ProfCycle:CreateTexture(nil, "BACKGROUND")
 
+	MainPanel.prof_button = ProfCycle
 
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	-- ProfCycle scripts/functions.
-	-- ----------------------------------------------------------------------------
-	do
-		-- Changes to the TradeSkill handling in Legion necessitate a 0.1 second timer to run this function.
-		local function ScanCurrentProfession()
-			addon:Scan()
-		end
+	-------------------------------------------------------------------------------
+	ProfCycle:SetScript("OnClick",
+			    function(self, button, down)
+				    -- Known professions should be in Player.professions
 
-		local availableProfessions = {}
+				    -- This loop is gonna be weird. The reason is because we need to
+				    -- ensure that we cycle through all the known professions, but also
+				    -- that we do so in order. That means that if the currently displayed
+				    -- profession is the last one in the list, we're actually going to
+				    -- iterate completely once to get to the currently displayed profession
+				    -- and then iterate again to make sure we display the next one in line.
+				    -- Further, there is the nuance that the person may not know any
+				    -- professions yet at all. Users are so annoying.
+				    local startLoop = 0
+				    local endLoop = 0
+				    local displayProf = 0
 
-		profession_cycler:SetScript("OnClick", function(self, button_name, down)
-			local player = private.Player
-			table.wipe(availableProfessions)
+				    local NUM_PROFESSIONS = 12
 
-			for index = 1, #private.ORDERED_LOCALIZED_PROFESSION_NAMES do
-                local localizedProfessionName = private.ORDERED_LOCALIZED_PROFESSION_NAMES[index]
+				    -- ok, so first off, if we've never done this before, there is no "current"
+				    -- and a single iteration will do nicely, thank you
+				    if button == "LeftButton" then
+					    -- normal profession switch
+					    if MainPanel.profession == 0 then
+						    startLoop = 1
+						    endLoop = NUM_PROFESSIONS + 1
+					    else
+						    startLoop = MainPanel.profession + 1
+						    endLoop = MainPanel.profession
+					    end
+					    local index = startLoop
 
-				if player.professions[localizedProfessionName] then
-					if not private.Professions[localizedProfessionName] then
-						addon:InitializeProfession(localizedProfessionName)
-					end
+					    while index ~= endLoop do
+						    if index > NUM_PROFESSIONS then
+							    index = 1
+						    elseif Player.professions[ORDERED_PROFESSIONS[index]] then
+							    displayProf = index
+							    MainPanel.profession = index
+							    break
+						    else
+							    index = index + 1
+						    end
+					    end
+				    elseif button == "RightButton" then
+					    -- reverse profession switch
+					    if MainPanel.profession == 0 then
+						    startLoop = NUM_PROFESSIONS + 1
+						    endLoop = 0
+					    else
+						    startLoop = MainPanel.profession - 1
+						    endLoop = MainPanel.profession
+					    end
+					    local index = startLoop
 
-					availableProfessions[#availableProfessions + 1] = private.Professions[localizedProfessionName]
-				end
-			end
+					    while index ~= endLoop do
+						    if index < 1 then
+							    index = NUM_PROFESSIONS
+						    elseif Player.professions[ORDERED_PROFESSIONS[index]] then
+							    displayProf = index
+							    MainPanel.profession = index
+							    break
+						    else
+							    index = index - 1
+						    end
+					    end
+				    end
+				    local trade_frame = _G.GnomeWorksFrame or _G.Skillet or _G.MRTSkillFrame or _G.ATSWFrame or _G.CauldronFrame or _G.TradeSkillFrame
+				    local is_shown = trade_frame:IsVisible()
+				    local sfx
 
-			local currentProfessionIndex
-			for index = 1, #availableProfessions do
-				if availableProfessions[index] == private.CurrentProfession then
-					currentProfessionIndex = index
-					break
-				end
-			end
+				    PlaySound("igCharacterNPCSelect")
 
-            if currentProfessionIndex then
-                if button_name == "LeftButton" then
-                    currentProfessionIndex = currentProfessionIndex + 1
+				    -- If not shown, save the current sound effects setting then set it to 0.
+				    if not is_shown then
+					    sfx = tonumber(GetCVar("Sound_EnableSFX"))
+					    SetCVar("Sound_EnableSFX", 0)
+				    end
+				    CastSpellByName(ORDERED_PROFESSIONS[MainPanel.profession])
+				    addon:Scan()
 
-                    if currentProfessionIndex > #availableProfessions then
-                        currentProfessionIndex = 1
-                    end
-                elseif button_name == "RightButton" then
-                    currentProfessionIndex = currentProfessionIndex - 1
+				    if not is_shown then
+					    CloseTradeSkill()
+					    SetCVar("Sound_EnableSFX", sfx)
+				    end
+			    end)
 
-                    if currentProfessionIndex < 1 then
-                        currentProfessionIndex = #availableProfessions
-                    end
-                end
+	function ProfCycle:ChangeTexture(texture)
+		local normal, pushed, disabled = self._normal, self._pushed, self._disabled
 
-				_G.PlaySound(SOUNDKIT.IG_CHARACTER_NPC_SELECT, "Master")
+		normal:SetTexture([[Interface\Addons\AckisRecipeList\img\]] .. texture .. [[_up]])
+		normal:SetTexCoord(0, 1, 0, 1)
+		normal:SetAllPoints(self)
+		self:SetNormalTexture(normal)
 
-                -- If not shown, save the current sound effects setting then set it to 0.
-                local cVarSfx
-                local isPanelShown = addon.scan_button:GetParent():IsVisible()
-                if not isPanelShown then
-                    cVarSfx = tonumber(_G.GetCVar("Sound_EnableSFX"))
-                    _G.SetCVar("Sound_EnableSFX", 0)
-                end
+		pushed:SetTexture([[Interface\Addons\AckisRecipeList\img\]] .. texture .. [[_down]])
+		pushed:SetTexCoord(0, 1, 0, 1)
+		pushed:SetAllPoints(self)
+		self:SetPushedTexture(pushed)
 
-				local activationSpellName = availableProfessions[currentProfessionIndex]:ActivationSpellName()
-
-                _G.CastSpellByName(activationSpellName)
-				_G.C_Timer.After(0.1, ScanCurrentProfession)
-
-                if not isPanelShown then
-                    _G.CloseTradeSkill()
-                    _G.SetCVar("Sound_EnableSFX", cVarSfx)
-				end
-            end
-		end)
-	end -- do-block
-
-	function profession_cycler:SetTexture()
-		_G.SetPortraitToTexture("ARL_ProfessionButtonPortrait", _G.C_TradeSkillUI.GetTradeSkillTexture(_G.C_TradeSkillUI.GetTradeSkillLine()))
+		disabled:SetTexture([[Interface\Addons\AckisRecipeList\img\]] .. texture .. [[_up]])
+		disabled:SetTexCoord(0, 1, 0, 1)
+		disabled:SetAllPoints(self)
+		self:SetDisabledTexture(disabled)
 	end
 
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	-- The search entry box and associated methods.
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	local SearchRecipes
 	do
-		local recipe_fields = {
-			"_localizedName",
+		local acquire_names = private.acquire_names
+		local location_list = private.location_list
+
+		local search_params = {
+			"name",
 			"skill_level",
+			--[===[@debug@
+			-- "item_id",
+			--@end-debug@]===]
 			"specialty",
 		}
-
-		local function SearchByField(recipe, search_pattern)
-			for index, field in ipairs(recipe_fields) do
-				local str = recipe[field] and tostring(recipe[field]):lower()
-
-				if str and str:find(search_pattern) then
-					return true
-				end
-			end
-			return false
-		end
-
-		local function SearchByAcquireType(recipe, searchPattern)
-			for acquireTypeLabel, acquireType in pairs(private.AcquireTypes) do
-                if recipe:AcquireDataOfType(acquireType) and acquireType:Name():lower():find(searchPattern) then
-                    return true
-                end
-			end
-			return false
-		end
-
-		local function SearchByLocation(recipe, searchPattern)
-            for name, location in pairs(private.Locations) do
-                if location:HasRecipe(recipe) and location:LocalizedName():lower():find(searchPattern) then
-                    return true
-                end
-            end
-
-			return false
-		end
-
-		local function SearchByQuality(recipe, searchPattern)
-			if private.ITEM_QUALITY_NAMES[recipe:QualityID()]:lower():find(searchPattern) then
-				return true
-			end
-			return false
-		end
-
-		local function SearchByList(recipe, searchPattern, acquireType)
-			for id_num, unit in acquireType:EntityPairs() do
-				if unit.item_list and unit.item_list[recipe:SpellID()] and unit.name and unit.name:lower():find(searchPattern) then
-					return true
-				end
-			end
-		end
-
-		local function SearchByTrainer(recipe, searchPattern)
-			return SearchByList(recipe, searchPattern, private.AcquireTypes.Trainer)
-		end
-
-		local function SearchByVendor(recipe, searchPattern)
-			return SearchByList(recipe, searchPattern, private.AcquireTypes.Vendor)
-		end
-
-		local function SearchByMobDrop(recipe, searchPattern)
-			return SearchByList(recipe, searchPattern, private.AcquireTypes.MobDrop)
-		end
-
-		local function SearchByCustom(recipe, searchPattern)
-			return SearchByList(recipe, searchPattern, private.AcquireTypes.Custom)
-		end
-
-		local function SearchByDiscovery(recipe, searchPattern)
-			return SearchByList(recipe, searchPattern, private.AcquireTypes.Discovery)
-		end
-
-		local function SearchByReputation(recipe, searchPattern)
-			local reputationAcquireType = private.AcquireTypes.Reputation
-            local reputationAcquireData = recipe:AcquireDataOfType(reputationAcquireType)
-
-            if reputationAcquireData then
-                for sourceID, sourceData in pairs(reputationAcquireData) do
-                    local name = reputationAcquireType:GetEntity(sourceID).name
-                    if name and name:lower():find(searchPattern) then
-                        return true
-                    end
-                end
-            end
-
-			return false
-		end
-
-		local SEARCH_FUNCTIONS = {
-			SearchByField,
-			SearchByQuality,
-			SearchByAcquireType,
-			SearchByLocation,
-			SearchByReputation,
-			SearchByTrainer,
-			SearchByVendor,
-			SearchByMobDrop,
-			SearchByCustom,
-			SearchByDiscovery,
-		}
-
 		-- Scans through the recipe database and toggles the flag on if the item is in the search criteria
-		function SearchRecipes(searchPattern)
-			if not searchPattern then
+		function SearchRecipes(pattern)
+			if not pattern then
 				return
 			end
-			searchPattern = searchPattern:lower()
+			local current_prof = ORDERED_PROFESSIONS[MainPanel.profession]
 
-			for _, recipe in pairs(private.CurrentProfession.Recipes) do
-				recipe:RemoveState("RELEVANT")
+			pattern = pattern:lower()
 
-				for search_index = 1, #SEARCH_FUNCTIONS do
-					if SEARCH_FUNCTIONS[search_index](recipe, searchPattern) then
-						recipe:AddState("RELEVANT")
-						break
+			for index, entry in pairs(private.recipe_list) do
+				entry:RemoveState("RELEVANT")
+
+				if entry.profession == current_prof then
+					local found = false
+
+					for index, field in ipairs(search_params) do
+						local str = entry[field] and tostring(entry[field]):lower() or nil
+
+						if str and str:find(pattern) then
+							entry:AddState("RELEVANT")
+							found = true
+							break
+						end
+					end
+
+					if not found then
+						for acquire_type in pairs(acquire_names) do
+							local str = acquire_names[acquire_type]:lower()
+
+							if str and str:find(pattern) and entry.acquire_data[acquire_type] then
+								entry:AddState("RELEVANT")
+								found = true
+								break
+							end
+						end
+					end
+
+					if not found then
+						for location_name in pairs(location_list) do
+							local breakout = false
+
+							for spell_id in pairs(location_list[location_name].recipes) do
+								if spell_id == entry.spell_id then
+									local str = location_name:lower()
+
+									if str and str:find(pattern) then
+										entry:AddState("RELEVANT")
+										breakout = true
+										break
+									end
+								end
+							end
+
+							if breakout then
+								break
+							end
+						end
 					end
 				end
-			end
-		end
-	end	-- do-block
+			end	-- if entry.profession
+		end	-- for
+	end	-- do
 
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	-- Search EditBox
-	-- ----------------------------------------------------------------------------
-	local SearchBox = _G.CreateFrame("EditBox", "ARL_SearchBox", MainPanel, "SearchBoxTemplate")
+	-------------------------------------------------------------------------------
+	local SearchBox = CreateFrame("EditBox", nil, MainPanel, "InputBoxTemplate")
 
 	SearchBox:EnableMouse(true)
 	SearchBox:SetAutoFocus(false)
-	SearchBox:SetFontObject("ChatFontSmall")
+	SearchBox:SetFontObject(ChatFontSmall)
 	SearchBox:SetWidth(130)
 	SearchBox:SetHeight(12)
 	SearchBox:SetPoint("TOPLEFT", MainPanel, "TOPLEFT", 75, -39)
@@ -570,43 +591,48 @@ function private.InitializeFrame()
 
 	MainPanel.search_editbox = SearchBox
 
+	SearchBox:SetText(_G.SEARCH)
 	SearchBox:SetHistoryLines(10)
 
 	-- Allow removal of focus from the SearchBox by clicking on the WorldFrame.
 	do
 		local old_x, old_y, click_time
 
-		_G.WorldFrame:HookScript("OnMouseDown", function(frame, ...)
-			if not SearchBox:HasFocus() then
-				return
-			end
-			old_x, old_y = _G.GetCursorPosition()
-			click_time = _G.GetTime()
-		end)
+		WorldFrame:HookScript("OnMouseDown",
+				      function(frame, ...)
+					      if not SearchBox:HasFocus() then
+						      return
+					      end
+					      old_x, old_y = GetCursorPosition()
+					      click_time = GetTime()
+				      end)
 
-		_G.WorldFrame:HookScript("OnMouseUp", function(frame, ...)
-			if not SearchBox:HasFocus() then
-				return
-			end
-			local x, y = _G.GetCursorPosition()
+		WorldFrame:HookScript("OnMouseUp",
+				      function(frame, ...)
+					      if not SearchBox:HasFocus() then
+						      return
+					      end
+					      local x, y = GetCursorPosition()
 
-			if not old_x or not old_y or not x or not y or not click_time then
-				SearchBox:ClearFocus()
-				return
-			end
+					      if not old_x or not old_y or not x or not y or not click_time then
+						      SearchBox:ClearFocus()
+						      return
+					      end
 
-			if (math.abs(x - old_x) + math.abs(y - old_y)) <= 5 and _G.GetTime() - click_time < .5 then
-				SearchBox:ClearFocus()
-			end
-		end)
+					      if (_G.math.abs(x - old_x) + _G.math.abs(y - old_y)) <= 5 and GetTime() - click_time < .5 then
+						      SearchBox:ClearFocus()
+					      end
+				      end)
 	end
 
 	-- Resets the SearchBox text and the state of all MainPanel.list_frame and recipe_list entries.
 	function SearchBox:Reset()
-		for _, recipe in pairs(private.CurrentProfession.Recipes) do
+		for index, recipe in pairs(private.recipe_list) do
 			recipe:RemoveState("RELEVANT")
 		end
 		self.prev_search = nil
+
+		self:SetText(_G.SEARCH)
 
 		if self:HasFocus() then
 			self:HighlightText()
@@ -624,243 +650,261 @@ function private.InitializeFrame()
 		return true
 	end
 
-	SearchBox:HookScript("OnEnterPressed", function(self)
-		local searchtext = self:GetText()
-		searchtext = searchtext:trim()
+	SearchBox:SetScript("OnEnterPressed",
+			    function(self)
+				    local searchtext = self:GetText()
+				    searchtext = searchtext:trim()
 
-		if not searchtext or searchtext == "" then
-			self:Reset()
-			return
-		end
-		self:HighlightText()
+				    if not searchtext or searchtext == "" then
+					    self:Reset()
+					    return
+				    end
+				    self:HighlightText()
 
-		if searchtext == _G.SEARCH then
-			return
-		end
-		self.prev_search = searchtext
+				    if searchtext == _G.SEARCH then
+					    return
+				    end
+				    self.prev_search = searchtext
 
-		self:AddHistoryLine(searchtext)
-		SearchRecipes(searchtext)
-		MainPanel.list_frame:Update(nil, false)
-	end)
+				    self:AddHistoryLine(searchtext)
+				    SearchRecipes(searchtext)
+				    MainPanel.list_frame:Update(nil, false)
+			    end)
 
-	SearchBox:HookScript("OnEditFocusLost", function(self)
-		_G.SearchBoxTemplate_OnEditFocusLost(self)
+	SearchBox:SetScript("OnEditFocusGained", SearchBox.HighlightText)
 
-		local text = self:GetText()
+	SearchBox:SetScript("OnEditFocusLost",
+			    function(self)
+				    local text = self:GetText()
 
-		if text == "" or text == _G.SEARCH then
-			self:Reset()
-			return
-		end
-		self:AddHistoryLine(text)
-	end)
+				    if text == "" or text == _G.SEARCH then
+					    self:Reset()
+					    return
+				    end
+
+				    -- Ensure that the highlight is cleared.
+				    self:SetText(text)
+
+				    self:AddHistoryLine(text)
+			    end)
 
 
-	SearchBox:SetScript("OnTextSet", function(self)
-		if not self:HasFocus() and self:GetText() == "" then
-			self.searchIcon:SetVertexColor(0.6, 0.6, 0.6)
-			self.clearButton:Hide()
-		else
-			self.searchIcon:SetVertexColor(1.0, 1.0, 1.0)
-			self.clearButton:Show()
-		end
+	SearchBox:SetScript("OnTextSet",
+			    function(self)
+				    local text = self:GetText()
 
-		local text = self:GetText()
-		if text ~= "" and text ~= _G.SEARCH and text ~= self.prev_search then
-			self:HighlightText()
-		else
-			self:Reset()
-		end
-	end)
+				    if text ~= "" and text ~= _G.SEARCH and text ~= self.prev_search then
+					    self:HighlightText()
+				    else
+					    self:Reset()
+				    end
+			    end)
 
 	do
 		local last_update = 0
-		local updater = _G.CreateFrame("Frame", nil, _G.UIParent)
+		local updater = CreateFrame("Frame", nil, UIParent)
 
 		updater:Hide()
-		updater:SetScript("OnUpdate", function(self, elapsed)
-			last_update = last_update + elapsed
+		updater:SetScript("OnUpdate",
+				  function(self, elapsed)
+					  last_update = last_update + elapsed
 
-			if last_update < 0.25 then
-				return
-			end
-			local search_text = SearchBox:GetText()
+					  if last_update >= 0.5 then
+						  last_update = 0
 
-			if #search_text < 4 then
-				last_update = 0
-				return
-			end
-			last_update = 0
+						  SearchRecipes(SearchBox:GetText())
+						  MainPanel.list_frame:Update(nil, false)
+						  self:Hide()
+					  end
+				  end)
 
-			SearchRecipes(search_text)
-			MainPanel.list_frame:Update(nil, false)
-			self:Hide()
-		end)
+		SearchBox:SetScript("OnTextChanged",
+				    function(self, is_typed)
+					    if not is_typed then
+						    return
+					    end
+					    local text = self:GetText()
 
-		SearchBox:HookScript("OnTextChanged", function(self, is_typed)
-			if not is_typed then
-				return
-			end
-			local text = self:GetText()
-
-			if text ~= "" and text ~= _G.SEARCH and text ~= self.prev_search then
-				updater:Show()
-				last_update = 0
-			else
-				self:Reset()
-			end
-		end)
+					    if text ~= "" and text ~= _G.SEARCH and text ~= self.prev_search then
+						    updater:Show()
+					    else
+						    self:Reset()
+					    end
+				    end)
 	end	-- do
 
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	-- Create the expand button and set its scripts.
-	-- ----------------------------------------------------------------------------
-	local expand_button_frame = _G.CreateFrame("Frame", nil, MainPanel)
+	-------------------------------------------------------------------------------
+	local ExpandButtonFrame = CreateFrame("Frame", nil, MainPanel)
 
-	expand_button_frame:SetHeight(20)
-	expand_button_frame:SetPoint("TOPLEFT", SearchBox, "BOTTOMLEFT", -12, -5)
+	ExpandButtonFrame:SetHeight(20)
+	ExpandButtonFrame:SetPoint("TOPLEFT", SearchBox, "BOTTOMLEFT", -12, -5)
 
-	expand_button_frame.left = expand_button_frame:CreateTexture(nil, "BACKGROUND")
-	expand_button_frame.left:SetWidth(8)
-	expand_button_frame.left:SetHeight(22)
-	expand_button_frame.left:SetPoint("TOPLEFT", expand_button_frame, 0, 4)
-	expand_button_frame.left:SetTexture("Interface\\QuestFrame\\UI-QuestLogSortTab-Left")
+	ExpandButtonFrame.left = ExpandButtonFrame:CreateTexture(nil, "BACKGROUND")
+	ExpandButtonFrame.left:SetWidth(8)
+	ExpandButtonFrame.left:SetHeight(22)
+	ExpandButtonFrame.left:SetPoint("TOPLEFT", ExpandButtonFrame, 0, 4)
+	ExpandButtonFrame.left:SetTexture("Interface\\QuestFrame\\UI-QuestLogSortTab-Left")
 
-	expand_button_frame.right = expand_button_frame:CreateTexture(nil, "BACKGROUND")
-	expand_button_frame.right:SetWidth(8)
-	expand_button_frame.right:SetHeight(22)
-	expand_button_frame.right:SetPoint("TOPRIGHT", expand_button_frame, 0, 4)
-	expand_button_frame.right:SetTexture("Interface\\QuestFrame\\UI-QuestLogSortTab-Right")
+	ExpandButtonFrame.right = ExpandButtonFrame:CreateTexture(nil, "BACKGROUND")
+	ExpandButtonFrame.right:SetWidth(8)
+	ExpandButtonFrame.right:SetHeight(22)
+	ExpandButtonFrame.right:SetPoint("TOPRIGHT", ExpandButtonFrame, 0, 4)
+	ExpandButtonFrame.right:SetTexture("Interface\\QuestFrame\\UI-QuestLogSortTab-Right")
 
-	expand_button_frame.middle = expand_button_frame:CreateTexture(nil, "BACKGROUND")
-	expand_button_frame.middle:SetHeight(22)
-	expand_button_frame.middle:SetPoint("LEFT", expand_button_frame.left, "RIGHT")
-	expand_button_frame.middle:SetPoint("RIGHT", expand_button_frame.right, "LEFT")
-	expand_button_frame.middle:SetTexture("Interface\\QuestFrame\\UI-QuestLogSortTab-Middle")
+	ExpandButtonFrame.middle = ExpandButtonFrame:CreateTexture(nil, "BACKGROUND")
+	ExpandButtonFrame.middle:SetHeight(22)
+	ExpandButtonFrame.middle:SetPoint("LEFT", ExpandButtonFrame.left, "RIGHT")
+	ExpandButtonFrame.middle:SetPoint("RIGHT", ExpandButtonFrame.right, "LEFT")
+	ExpandButtonFrame.middle:SetTexture("Interface\\QuestFrame\\UI-QuestLogSortTab-Middle")
 
-	local expand_button = _G.CreateFrame("Button", nil, MainPanel)
-	expand_button:SetWidth(16)
-	expand_button:SetHeight(16)
-
-	local expand_label = expand_button:CreateFontString(nil, "ARTWORK")
-	expand_label:SetFontObject("GameFontNormalSmall")
-	expand_label:SetPoint("LEFT", expand_button, "Right", 0, 0)
-	expand_label:SetJustifyH("LEFT")
-	expand_label:SetText(_G.ALL)
-
-	expand_button:SetFontString(expand_label)
-	private.SetTooltipScripts(expand_button, L["EXPANDALL_DESC"])
+	local ExpandButton = GenericCreateButton(nil, MainPanel, 16, 16, "GameFontNormalSmall", _G.ALL, "LEFT", L["EXPANDALL_DESC"], 2)
 
 	-- Make sure the button frame is large enough to hold the localized word for "All"
-	expand_button_frame:SetWidth(27 + expand_button:GetFontString():GetStringWidth())
+	ExpandButtonFrame:SetWidth(27 + ExpandButton:GetFontString():GetStringWidth())
 
-	MainPanel.expand_button = expand_button
+	MainPanel.expand_button = ExpandButton
 
-	expand_button:SetPoint("LEFT", expand_button_frame.left, "RIGHT", -3, -3)
+	ExpandButton:SetPoint("LEFT", ExpandButtonFrame.left, "RIGHT", -3, -3)
 
-	expand_button:SetScript("OnClick", function(self, mouse_button, down)
-		local currentTab = MainPanel.current_tab
-        local currentProfession = private.CurrentProfession
-        local localizedProfessionName = currentProfession:LocalizedName()
-		local professionExpandButton = currentTab["expand_button_" .. localizedProfessionName]
-		local expandMode
+	ExpandButton.text:ClearAllPoints()
+	ExpandButton.text:SetPoint("LEFT", ExpandButton, "Right", 0, 0)
 
-		if professionExpandButton and currentTab.ProfessionState and currentTab.ProfessionState[currentProfession] then
-			table.wipe(currentTab.ProfessionState[currentProfession])
-		else
-			if _G.IsShiftKeyDown() then
-				expandMode = "deep"
-			else
-				expandMode = "normal"
-			end
-		end
-		-- MainPanel.list_frame:Update() must be called before the button can be expanded or contracted, since
-		-- the button is contracted from there.
-		-- If expand_mode is nil, that means expand nothing.
-		MainPanel.list_frame:Update(expandMode, false)
+	ExpandButton:SetScript("OnClick",
+			       function(self, mouse_button, down)
+				       local current_tab = MainPanel.tabs[MainPanel.current_tab]
+				       local expanded = current_tab["expand_button_"..MainPanel.profession]
+				       local expand_mode
 
-		if professionExpandButton then
-			self:Contract(currentTab)
-		else
-			self:Expand(currentTab)
-		end
-	end)
+				       if not expanded then
+					       if _G.IsShiftKeyDown() then
+						       expand_mode = "deep"
+					       else
+						       expand_mode = "normal"
+					       end
+				       else
+					       local prof_name = ORDERED_PROFESSIONS[MainPanel.profession]
 
-	function expand_button:Expand(currentTab)
-		currentTab["expand_button_" .. private.CurrentProfession:LocalizedName()] = true
+					       table.wipe(current_tab[prof_name.." expanded"])
+				       end
+				       -- MainPanel.list_frame:Update() must be called before the button can be expanded or contracted, since
+				       -- the button is contracted from there.
+				       -- If expand_mode is nil, that means expand nothing.
+				       MainPanel.list_frame:Update(expand_mode, false)
+
+				       if expanded then
+					       self:Contract(current_tab)
+				       else
+					       self:Expand(current_tab)
+				       end
+			       end)
+
+	function ExpandButton:Expand(current_tab)
+		current_tab["expand_button_"..MainPanel.profession] = true
 
 		self:SetNormalTexture("Interface\\BUTTONS\\UI-MinusButton-Up")
 		self:SetPushedTexture("Interface\\BUTTONS\\UI-MinusButton-Down")
 		self:SetHighlightTexture("Interface\\BUTTONS\\UI-PlusButton-Hilight")
 		self:SetDisabledTexture("Interface\\BUTTONS\\UI-MinusButton-Disabled")
 
-		private.SetTooltipScripts(self, L["CONTRACTALL_DESC"])
+		SetTooltipScripts(self, L["CONTRACTALL_DESC"])
 	end
 
-	function expand_button:Contract(currentTab)
-		currentTab["expand_button_" .. private.CurrentProfession:LocalizedName()] = nil
+	function ExpandButton:Contract(current_tab)
+		current_tab["expand_button_"..MainPanel.profession] = nil
 
 		self:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up")
 		self:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-Down")
 		self:SetHighlightTexture("Interface\\Buttons\\UI-PlusButton-Hilight")
 		self:SetDisabledTexture("Interface\\Buttons\\UI-PlusButton-Disabled")
 
-		private.SetTooltipScripts(self, L["EXPANDALL_DESC"])
+		SetTooltipScripts(self, L["EXPANDALL_DESC"])
 	end
 
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
+	-- "Skill Level" checkbox.
+	-------------------------------------------------------------------------------
+	local SkillToggle = CreateFrame("CheckButton", nil, MainPanel, "UICheckButtonTemplate")
+	SkillToggle:SetPoint("TOPLEFT", SearchBox, "TOPRIGHT", 0, 0)
+	SkillToggle:SetHeight(16)
+	SkillToggle:SetWidth(16)
+
+	SkillToggle.text = SkillToggle:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+	SkillToggle.text:SetPoint("LEFT", SkillToggle, "RIGHT", 0, 0)
+
+	SkillToggle:SetScript("OnClick",
+			      function(self, button, down)
+				      addon.db.profile.skill_view = not addon.db.profile.skill_view
+				      MainPanel.list_frame:Update(nil, false)
+			      end)
+
+	SkillToggle:SetScript("OnShow",
+			      function(self)
+				      self:SetChecked(addon.db.profile.skill_view)
+			      end)
+
+	SkillToggle.text:SetText(_G.SKILL)
+	SetTooltipScripts(SkillToggle, L["SKILL_TOGGLE_DESC"], 1)
+
+	-------------------------------------------------------------------------------
 	-- "Display Exclusions" checkbox.
-	-- ----------------------------------------------------------------------------
-	local ExcludeToggle = _G.CreateFrame("CheckButton", nil, MainPanel, "UICheckButtonTemplate")
-	ExcludeToggle:SetPoint("TOPLEFT", SearchBox, "TOPRIGHT", 0, 0)
-	ExcludeToggle:SetSize(16, 16)
+	-------------------------------------------------------------------------------
+	local ExcludeToggle = CreateFrame("CheckButton", nil, MainPanel, "UICheckButtonTemplate")
+	ExcludeToggle:SetPoint("TOP", SkillToggle, "BOTTOM", 0, 1)
+	ExcludeToggle:SetHeight(16)
+	ExcludeToggle:SetWidth(16)
 
 	ExcludeToggle.text = ExcludeToggle:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
 	ExcludeToggle.text:SetPoint("LEFT", ExcludeToggle, "RIGHT", 0, 0)
 
-	ExcludeToggle:SetScript("OnClick", function(self, button, down)
-		addon.db.profile.ignoreexclusionlist = not addon.db.profile.ignoreexclusionlist
-		MainPanel.list_frame:Update(nil, false)
-	end)
+	ExcludeToggle:SetScript("OnClick",
+				function(self, button, down)
+					addon.db.profile.ignoreexclusionlist = not addon.db.profile.ignoreexclusionlist
+					MainPanel.list_frame:Update(nil, false)
+				end)
 
-	ExcludeToggle:SetScript("OnShow", function(self)
-		self:SetChecked(addon.db.profile.ignoreexclusionlist)
-	end)
+	ExcludeToggle:SetScript("OnShow",
+				function(self)
+					self:SetChecked(addon.db.profile.ignoreexclusionlist)
+				end)
 
 	ExcludeToggle.text:SetText(L["Display Exclusions"])
-	private.SetTooltipScripts(ExcludeToggle, L["DISPLAY_EXCLUSION_DESC"], 1)
+	SetTooltipScripts(ExcludeToggle, L["DISPLAY_EXCLUSION_DESC"], 1)
 
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	-- Create the X-close button, and set its scripts.
-	-- ----------------------------------------------------------------------------
-	MainPanel.xclose_button = _G.CreateFrame("Button", nil, MainPanel, "UIPanelCloseButton")
+	-------------------------------------------------------------------------------
+	MainPanel.xclose_button = CreateFrame("Button", nil, MainPanel, "UIPanelCloseButton")
 	MainPanel.xclose_button:SetPoint("TOPRIGHT", MainPanel, "TOPRIGHT", -30, -8)
 
-	MainPanel.xclose_button:SetScript("OnClick", function(self, button, down)
-		MainPanel:Hide()
-	end)
+	MainPanel.xclose_button:SetScript("OnClick",
+					  function(self, button, down)
+						  MainPanel:Hide()
+					  end)
 
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	-- Create MainPanel.filter_toggle, and set its scripts.
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	do
-		local filter_toggle = _G.CreateFrame("Button", nil, MainPanel)
-		filter_toggle:SetWidth(24)
-		filter_toggle:SetHeight(24)
-		filter_toggle:SetPoint("TOPLEFT", MainPanel, "TOPLEFT", 323, -41)
-
-		private.SetTooltipScripts(filter_toggle, L["FILTER_OPEN_DESC"])
-
-		filter_toggle:SetScript("OnClick", function(self, button, down)
-			private.SetTooltipScripts(self, MainPanel.is_expanded and L["FILTER_OPEN_DESC"] or L["FILTER_CLOSE_DESC"])
+		local function Toggle_OnClick(self, button, down)
+			-- The first time this button is clicked, everything in the expanded section of the MainPanel must be created.
+			if private.InitializeFilterPanel then
+				private.InitializeFilterPanel()
+			end
+			SetTooltipScripts(self, MainPanel.is_expanded and L["FILTER_OPEN_DESC"] or L["FILTER_CLOSE_DESC"])
 
 			MainPanel:ToggleState()
 			self:SetTextures()
-		end)
+		end
+
+		local filter_toggle = GenericCreateButton(nil, MainPanel, 24, 24, nil, nil, nil, L["FILTER_OPEN_DESC"], 2)
+		filter_toggle:SetPoint("TOPLEFT", MainPanel, "TOPLEFT", 323, -41)
+
+		filter_toggle:SetScript("OnClick", Toggle_OnClick)
 
 		filter_toggle:SetHighlightTexture([[Interface\CHATFRAME\UI-ChatIcon-BlinkHilight]])
-
+		
 		function filter_toggle:SetTextures()
 			if MainPanel.is_expanded then
 				self:SetNormalTexture([[Interface\BUTTONS\UI-SpellbookIcon-PrevPage-Up]])
@@ -875,30 +919,28 @@ function private.InitializeFrame()
 		MainPanel.filter_toggle = filter_toggle
 	end	-- do-block
 
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	-- Sort-mode toggle button.
-	-- ----------------------------------------------------------------------------
-	local sort_toggle = _G.CreateFrame("Button", nil, MainPanel)
-	sort_toggle:SetWidth(24)
-	sort_toggle:SetHeight(24)
-	sort_toggle:SetPoint("LEFT", expand_button_frame, "RIGHT", 0, 2)
+	-------------------------------------------------------------------------------
+	local SortToggle = GenericCreateButton(nil, MainPanel, 24, 24, nil, nil, nil, L["SORTING_DESC"], 2)
 
-	private.SetTooltipScripts(sort_toggle, L["SORTING_DESC"])
+	MainPanel.sort_button = SortToggle
 
-	MainPanel.sort_button = sort_toggle
+	SortToggle:SetPoint("LEFT", ExpandButtonFrame, "RIGHT", 0, 2)
 
-	sort_toggle:SetScript("OnClick", function(self, button, down)
-		local sort_type = addon.db.profile.sorting
+	SortToggle:SetScript("OnClick",
+			     function(self, button, down)
+				     local sort_type = addon.db.profile.sorting
 
-		addon.db.profile.sorting = (sort_type == "Ascending" and "Descending" or "Ascending")
+				     addon.db.profile.sorting = (sort_type == "Ascending" and "Descending" or "Ascending")
 
-		self:SetTextures()
-		MainPanel.list_frame:Update(nil, false)
-	end)
+				     self:SetTextures()
+				     MainPanel.list_frame:Update(nil, false)
+			     end)
 
-	sort_toggle:SetHighlightTexture([[Interface\CHATFRAME\UI-ChatIcon-BlinkHilight]])
+	SortToggle:SetHighlightTexture([[Interface\CHATFRAME\UI-ChatIcon-BlinkHilight]])
 
-	function sort_toggle:SetTextures()
+	function SortToggle:SetTextures()
 		local sort_type = addon.db.profile.sorting
 
 		if sort_type == "Ascending" then
@@ -912,64 +954,11 @@ function private.InitializeFrame()
 		end
 	end
 
-	-- ----------------------------------------------------------------------------
-	-- Sort By buttons.
-	-- ----------------------------------------------------------------------------
-	do
-		local name_button, skill_button
-
-		local function ToggleOnClick(self)
-			addon.db.profile.skill_view = not addon.db.profile.skill_view
-
-			name_button:GetScript("OnShow")(name_button)
-			skill_button:GetScript("OnShow")(skill_button)
-			MainPanel.list_frame:Update(nil, false)
-		end
-
-		local sort_label = MainPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-		sort_label:SetPoint("LEFT", sort_toggle, "RIGHT", 0, 0)
-		sort_label:SetText(_G.COMPACT_UNIT_FRAME_PROFILE_SORTBY)
-
-		name_button = _G.CreateFrame("Button", nil, MainPanel)
-		name_button:SetNormalFontObject("GameFontNormalGraySmall")
-		name_button:SetHighlightFontObject("GameFontNormalSmall")
-		name_button:SetDisabledFontObject("GameFontHighlightSmallOutline")
-		name_button:SetFontString(name_button:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall"))
-		name_button:SetText(_G.NAME)
-		name_button:SetSize(name_button:GetFontString():GetStringWidth(), 16)
-		name_button:SetPoint("LEFT", sort_label, "RIGHT", 2, 0)
-
-		name_button:SetScript("OnClick", ToggleOnClick)
-
-		name_button:SetScript("OnShow", function(self)
-			self[addon.db.profile.skill_view and "Enable" or "Disable"](self)
-		end)
-
-		local separator = MainPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-		separator:SetPoint("LEFT", name_button, "RIGHT", 0, 0)
-		separator:SetText(" / ")
-
-		skill_button = _G.CreateFrame("Button", nil, MainPanel)
-		skill_button:SetNormalFontObject("GameFontNormalGraySmall")
-		skill_button:SetHighlightFontObject("GameFontNormalSmall")
-		skill_button:SetDisabledFontObject("GameFontHighlightSmallOutline")
-		skill_button:SetFontString(skill_button:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall"))
-		skill_button:SetText(_G.SKILL_LEVEL)
-		skill_button:SetSize(skill_button:GetFontString():GetStringWidth(), 16)
-		skill_button:SetPoint("LEFT", separator, "RIGHT", 0, 0)
-
-		skill_button:SetScript("OnClick", ToggleOnClick)
-
-		skill_button:SetScript("OnShow", function(self)
-			self[addon.db.profile.skill_view and "Disable" or "Enable"](self)
-		end)
-	end -- do-block
-
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	-- Create MainPanel.progress_bar and set its scripts
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	do
-		local progress_bar = _G.CreateFrame("StatusBar", nil, MainPanel, BackdropTemplateMixin and "BackdropTemplate")
+		local progress_bar = CreateFrame("StatusBar", nil, MainPanel)
 		progress_bar:SetWidth(216)
 		progress_bar:SetHeight(18)
 		progress_bar:SetPoint("BOTTOMLEFT", MainPanel, 17, 80)
@@ -1001,25 +990,20 @@ function private.InitializeFrame()
 		MainPanel.progress_bar = progress_bar
 	end	-- do
 
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	-- Create the close button, and set its scripts.
-	-- ----------------------------------------------------------------------------
-	local close_button = _G.CreateFrame("Button", ("%s_CloseButton"):format(FOLDER_NAME), MainPanel, "UIPanelButtonTemplate")
-	close_button:SetWidth(111)
-	close_button:SetHeight(24)
-	close_button:SetPoint("LEFT", MainPanel.progress_bar, "RIGHT", 3, 1)
-	close_button:SetText(_G.EXIT)
+	-------------------------------------------------------------------------------
+	MainPanel.close_button = GenericCreateButton(nil, MainPanel, 24, 111, "GameFontNormalSmall", _G.EXIT, "CENTER", L["CLOSE_DESC"], 1)
+	MainPanel.close_button:SetPoint("LEFT", MainPanel.progress_bar, "RIGHT", 3, 1)
 
-	MainPanel.close_button = close_button
+	MainPanel.close_button:SetScript("OnClick",
+					 function(self, button, down)
+						 MainPanel:Hide()
+					 end)
 
-	close_button:SetScript("OnClick", function(self, button, down)
-		MainPanel:Hide()
-	end)
-
-	private.SetTooltipScripts(close_button, L["CLOSE_DESC"])
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	-- Initialize components defined in other files.
-	-- ----------------------------------------------------------------------------
+	-------------------------------------------------------------------------------
 	private.InitializeListFrame()
 	private.InitializeTabs()
 

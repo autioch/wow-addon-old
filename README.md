@@ -1,2 +1,1 @@
-# wow-addon-old
-Old wow addons
+https://wowpedia.fandom.com/wiki/Widget_API

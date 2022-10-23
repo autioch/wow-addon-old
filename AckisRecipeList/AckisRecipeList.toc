@@ -1,17 +1,53 @@
-## Author: Ackis, Torhal, Ressy
+#@non-debug@
+## Title: Ackis Recipe List
+## Title-frFR: Ackis Recipe List 2.0
+## Title-deDE: Ackis Rezeptliste 2.0
+## Title-koKR: Ackis의 제조법 리스트 2.0
+## Title-esMX: Ackis Recipe List 2.0
+## Title-ruRU: Ackis Recipe List 2.0
+## Title-zhCN: Ackis Recipe List
+## Title-esES: Ackis Recipe List 2.0
+## Title-zhTW: Ackis Recipe List
+#@end-non-debug@
+#@debug@
+# ## Title: Ackis Recipe List - Development Version
+#@end-debug@
+## X-Curse-Packaged-Version: v2.01-14-gfc58e9f
+## X-Curse-Project-Name: Ackis Recipe List
+## X-Curse-Project-ID: arl
+## X-Curse-Repository-ID: wow/arl/mainline
 
-## Interface: 90001
-## Version: @project-version@
-## X-Revision: @project-abbreviated-hash@
-## X-Date: @file-date-iso@
+#@non-debug@
+## Notes: Ackis Recipe List is an addon which will scan your trade skills and provide information on how to obtain recipes. It works for all tradeskills including Runeforging.
+## Notes-frFR: Ackis Recipe List est un addon qui analyse vos métiers et fournit des informations sur la façon d'obtenir les recettes manquantes. Il fonctionne pour tous les métiers, y compris Runeforge.
+## Notes-deDE: Ackis Recipelist ist ein AddOn, das deine Berufe durchsucht und dir mitteilt, wo du fehlende Rezepte bekommst. Es funktioniert mit allen Berufen, inklusive Runenschmiedens.
+## Notes-koKR: Ackis Recipe List|1은;는; 당신의 전문 기술들을 훑어서 제조법들을 얻는 방법에 대한 정보를 제공할 애드온입니다. 룬 벼리기를 포함하여 모든 전문 기술들에 작용합니다.
+## Notes-esMX: Muestra una lista de recetas inexistentes para sus Habilidades de Comercio. Funciona con todas las habilidades comerciales, incluidas venenos y entrenamiento de bestias del cazador.
+## Notes-ruRU: Сканирует ваши профессии и составляет список отсутствующих рецептов. Также отображает информацию о способах их приобретения.
+## Notes-zhCN: 扫描并告知如何获取缺失配方的详细商业技能信息插件。
+## Notes-esES: Ackis Recipe List es un addon que escanea tus habilidades comerciales y provee información de cómo obtener las recetas. Funciona para todas las habilidades comerciales, incluida Forja de Runas.
+## Notes-zhTW: 掃描並告知如何獲取缺失配方的詳細商業技能訊息插件。
+#@end-non-debug@
+#@debug@
+# ## Notes: Latest alpha version of Ackis Recipe List
+#@end-debug@
 
-## X-Credits: Zhinjio, FGWarmonger, Kagaro, Speeddymon, Xinhuan, Aesir, BWMerlin, everyone who translated stuff and more!
+## Author: Torhal, Pompachomp, Ackis, Zhinjio, Jim-Bim
+## X-Donate: http://www.wowace.com/addons/arl/pages/donations/
+
+## Interface: 30300
+## X-Compatible-With: 30300
+## Version: v2.01-14-gfc58e9f
+## X-Revision: fc58e9f
+## X-Date: 2010-09-02T15:07:32Z
+
+## X-Credits: FGWarmonger, Kagaro, Speeddymon, Xinhuan, Aesir, BWMerlin, everyone who translated stuff and more!
 ## X-Category: Tradeskill
-## X-Localizations: enUS, frFR, zhCN, zhTW, deDE, itIT, koKR, esES, esMX, ruRU, ptBR
-## X-Website: http://www.curse.com/addons/wow/arl
+## X-Localizations: enUS, frFR, zhCN, zhTW, deDE, koKR, esES, esMX, ruRU
+## X-Website: http://wow.curse.com/downloads/wow-addons/details/arl.aspx
 ## X-Feedback: http://www.wowace.com/addons/arl/forum/
 
-## OptionalDeps: Ace3, LibAboutPanel, LibBabble-Boss-3.0, LibSharedMedia-3.0, LibQTip-1.0, LibTextDump-1.0, LibToast-1.0, LibDialog-1.0, Skillet, TomTom, TipTac, Carbonite
+## OptionalDeps: Ace3, LibAboutPanel, LibBabble-Zone-3.0, LibBabble-Faction-3.0, LibBabble-Boss-3.0, LibSharedMedia-3.0, LibQTip-1.0, Skillet, ATSW, Manufac, Cauldron, TomTom, TipTac, Carbonite, tekDebug
 ## DefaultState: Enabled
 
 ## X-WoWI-ID: 5061
@@ -21,40 +57,6 @@
 ## X-LoadOn-Slash: /arl
 ## X-LoadOn-Events: TRADE_SKILL_SHOW
 ## X-LoadOn-TRADE_SKILL_SHOW: AddonLoader:LoadAddOn("AckisRecipeList"); AckisRecipeList:TRADE_SKILL_SHOW()
-
-#@non-debug@
-## Title: @localization(locale="enUS", key="Title", namespace="ToC")@
-## Title-frFR: @localization(locale="frFR", key="Title", namespace="ToC")@
-## Title-deDE: @localization(locale="deDE", key="Title", namespace="ToC")@
-## Title-itIT: @localization(locale="itIT", key="Title", namespace="ToC")@
-## Title-koKR: @localization(locale="koKR", key="Title", namespace="ToC")@
-## Title-esMX: @localization(locale="esMX", key="Title", namespace="ToC")@
-## Title-ruRU: @localization(locale="ruRU", key="Title", namespace="ToC")@
-## Title-zhCN: @localization(locale="zhCN", key="Title", namespace="ToC")@
-## Title-esES: @localization(locale="esES", key="Title", namespace="ToC")@
-## Title-zhTW: @localization(locale="zhTW", key="Title", namespace="ToC")@
-## Title-ptBR: @localization(locale="ptBR", key="Title", namespace="ToC")@
-#@end-non-debug@
-#@debug@
-## Title: Ackis Recipe List - Development Version
-#@end-debug@
-
-#@non-debug@
-## Notes: @localization(locale="enUS", key="Description", namespace="ToC")@
-## Notes-frFR: @localization(locale="frFR", key="Description", namespace="ToC")@
-## Notes-deDE: @localization(locale="deDE", key="Description", namespace="ToC")@
-## Notes-koKR: @localization(locale="koKR", key="Description", namespace="ToC")@
-## Notes-itIT: @localization(locale="itIT", key="Description", namespace="ToC")@
-## Notes-esMX: @localization(locale="esMX", key="Description", namespace="ToC")@
-## Notes-ruRU: @localization(locale="ruRU", key="Description", namespace="ToC")@
-## Notes-zhCN: @localization(locale="zhCN", key="Description", namespace="ToC")@
-## Notes-esES: @localization(locale="esES", key="Description", namespace="ToC")@
-## Notes-zhTW: @localization(locale="zhTW", key="Description", namespace="ToC")@
-## Notes-ptBR: @localization(locale="ptBR", key="Description", namespace="ToC")@
-#@end-non-debug@
-#@debug@
-## Notes: Latest alpha version of Ackis Recipe List
-#@end-debug@
 
 #@no-lib-strip@
 # Libraries
@@ -67,32 +69,11 @@ locale.xml
 # Constants should be loaded first - many files use them in their main chunk.
 Constants.lua
 
-# AcquireTypes should be loaded second.
-Objects\AcquireType\BaseAcquireType.lua
-Objects\AcquireType\Achievement.lua
-Objects\AcquireType\Custom.lua
-Objects\AcquireType\Discovery.lua
-Objects\AcquireType\MobDrop.lua
-Objects\AcquireType\Quest.lua
-Objects\AcquireType\Reputation.lua
-Objects\AcquireType\Retired.lua
-Objects\AcquireType\TradeSkill.lua
-Objects\AcquireType\Trainer.lua
-Objects\AcquireType\Vendor.lua
-Objects\AcquireType\WorldDrop.lua
-Objects\AcquireType\WorldEvent.lua
-
-Objects\Location.lua
-
-Core.lua
-Utilities.lua
+core.lua
 Config.lua
 Waypoint.lua
 Scanner.lua
 Player.lua
-
-Objects\Profession.lua
-Objects\Recipe.lua
 
 # User Interface files
 interface.xml

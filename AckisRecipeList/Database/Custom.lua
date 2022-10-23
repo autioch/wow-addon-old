@@ -1,70 +1,80 @@
--- ----------------------------------------------------------------------------
--- AddOn namespace.
--- ----------------------------------------------------------------------------
-local FOLDER_NAME, private = ...
+--[[
+************************************************************************
+Custom.lua
+Custom acquire data for all of Ackis Recipe List
+************************************************************************
+File date: 2010-04-09T00:40:50Z
+File revision: @file-revision@
+Project revision: @project-revision@
+Project version: v2.01-14-gfc58e9f
+************************************************************************
+Format:
+	self:addLookupList(DB, Rep ID, Rep Name)
+************************************************************************
+Please see http://www.wowace.com/addons/arl/ for more information.
+************************************************************************
+This source code is released under All Rights Reserved.
+************************************************************************
+]]--
 
-local LibStub = _G.LibStub
-local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
-local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
+local MODNAME		= "Ackis Recipe List"
+local addon		= LibStub("AceAddon-3.0"):GetAddon(MODNAME)
+local L			= LibStub("AceLocale-3.0"):GetLocale(MODNAME)
+local BZ		= LibStub("LibBabble-Zone-3.0"):GetLookupTable()
 
--- ----------------------------------------------------------------------------
--- Imports.
--- ----------------------------------------------------------------------------
-local Z = private.ZONE_NAMES
+function addon:InitCustom(DB)
+	self:addLookupList(DB, 1, L["DISCOVERY_ALCH_ELIXIRFLASK"])
+	self:addLookupList(DB, 2, L["DISCOVERY_ALCH_POTION"])
+	self:addLookupList(DB, 3, L["DISCOVERY_ALCH_XMUTE"])
+	self:addLookupList(DB, 4, L["DISCOVERY_ALCH_PROT"])
+	self:addLookupList(DB, 5, L["DAILY_COOKING_MEAT"], BZ["Shattrath"], 0, 0)
+	self:addLookupList(DB, 6, L["DAILY_COOKING_FISH"], BZ["Shattrath"], 0, 0)
+	self:addLookupList(DB, 7, L["DAILY_FISHING_SHATT"], BZ["Shattrath"], 0, 0)
+	self:addLookupList(DB, 8, L["DEFAULT_RECIPE"])
+	self:addLookupList(DB, 9, L["CRAFTED_ENGINEERS"])
+	self:addLookupList(DB, 10, L["ONYXIA_HEAD_QUEST"], BZ["Onyxia's Lair"], 0, 0)
+	self:addLookupList(DB, 11, L["EDGE_OF_MADNESS"], BZ["Zul'Gurub"], 0, 0)
+	self:addLookupList(DB, 12, L["DISCOVERY_ALCH_WRATH"])
+	self:addLookupList(DB, 13, L["HENRY_STERN_RFD"], BZ["Razorfen Downs"], 0, 0)
+	self:addLookupList(DB, 14, L["DISCOVERY_INSC_MINOR"])
+	self:addLookupList(DB, 15, L["DISCOVERY_INSC_NORTHREND"])
+	self:addLookupList(DB, 16, L["ENG_GNOMER"], BZ["Gnomeregan"], 0, 0)
+	self:addLookupList(DB, 17, L["ENG_FLOOR_ITEM_BRD"], BZ["Blackrock Depths"], 0, 0)
+	self:addLookupList(DB, 18, L["DISCOVERY_ALCH_NORTHREND_RESEARCH"])
+	self:addLookupList(DB, 19, L["DISCOVERY_ALCH_NORTHREND_XMUTE"])
 
-function addon:InitCustom()
-	local function AddCustom(identifier, zoneName, coordX, coordY, faction)
-		return private.AcquireTypes.Custom:AddEntity(addon, {
-			coord_x = coordX,
-			coord_y = coordY,
-			faction = faction,
-			identifier = identifier,
-			item_list = {},
-			locationName = zoneName,
-			name = L[identifier],
-		})
-	end
+	self:addLookupList(DB, 22, L["AQ40_RANDOM_BOP"], BZ["Temple of Ahn'Qiraj"], 0, 0)
+	self:addLookupList(DB, 23, L["DM_CACHE"], BZ["Dire Maul"], 59.04, 48.82)
+	self:addLookupList(DB, 24, L["SUNWELL_RANDOM"], BZ["Sunwell Plateau"], 0, 0)
+	self:addLookupList(DB, 25, L["BRD_RANDOM_ROOM"], BZ["Blackrock Depths"], 0, 0)
+	self:addLookupList(DB, 26, L["MC_RANDOM"], BZ["Molten Core"], 0, 0)
+	self:addLookupList(DB, 27, L["HYJAL_RANDOM"], BZ["Hyjal Summit"], 0, 0)
 
-	AddCustom("DAILY_COOKING_MEAT", 	Z.SHATTRATH_CITY)
-	AddCustom("DAILY_COOKING_FISH", 	Z.SHATTRATH_CITY)
-	AddCustom("DAILY_FISHING_SHATT", 	Z.SHATTRATH_CITY)
-	AddCustom("DEFAULT_RECIPE")
-	AddCustom("CRAFTED_ENGINEERS")
-	AddCustom("ONYXIA_HEAD_QUEST", 		Z.ONYXIAS_LAIR)
-	AddCustom("ENG_FLOOR_ITEM_BRD", 	Z.BLACKROCK_DEPTHS)
-	AddCustom("BRD_MAIL",			Z.BLACKROCK_DEPTHS)
-	AddCustom("BRD_SHOULDERS", 		Z.BLACKROCK_DEPTHS)
-	AddCustom("STRATH_BS_PLANS", 		Z.STRATHOLME)
-	AddCustom("DM_TRIBUTE", 		Z.DIRE_MAUL, 			59.0, 48.8)
-	AddCustom("OGRI_DRAGONS", 		Z.BLADES_EDGE_MOUNTAINS)
-	AddCustom("NORMAL")
-	AddCustom("HEROIC")
-	AddCustom("MYTHIC")
-	AddCustom("MYTHIC_DUNGEON")
-	AddCustom("KUNG")
-	AddCustom("DAILY_COOKING_DAL", 		Z.DALARAN_NORTHREND)
-	AddCustom("ARCH_DROP_ULD", 		Z.ULDUM)
-	AddCustom("PREREQ")
-	AddCustom("BANANA_INFUSED_RUM", 	Z.KRASARANG_WILDS, 		52.3, 88.7)
-	AddCustom("FOUR_SENSES_BREW", 		Z.KUN_LAI_SUMMIT, 		44.7, 52.3)
-	AddCustom("LEARNT_BY_ACCEPTING_QUEST")
-	AddCustom("TIMELESS_ISLE_COOKING", 	Z.TIMELESS_ISLE, 		52.1, 46.1)
-	AddCustom("ANCIENT_GUO-LAI_CACHE", 	Z.VALE_OF_ETERNAL_BLOSSOMS)
-	AddCustom("DRAENOR_DEFAULT", 		Z.DRAENOR)
-	AddCustom("WORLD_QUEST")
-	AddCustom("RATED_PVP")
-	AddCustom("WATERLOGGED_CACHE", 		Z.HELMOUTH_CLIFFS)
-	AddCustom("SPOILS_OF_THE_WORTHY",	Z.HALLS_OF_VALOR)
-	AddCustom("TRANQUIL_MIND",		Z.DALARAN_BROKENISLES,		41.1, 35.8)
-	AddCustom("LEGION_BOSSES",		Z.BROKEN_ISLES)
-	AddCustom("ARCHAEOLOGY_HIGHBORNE")
-	AddCustom("WITHERED_ARMY")
-	AddCustom("TIMELOSTCHEST",		Z.SEARING_GORGE)
-	AddCustom("BOON_OF_THE_BUILDER",	Z.DALARAN_BROKENISLES,		38.6, 25.0)
-	AddCustom("KISS_SYAITH",		Z.BROKEN_SHORE,			49.0, 55.8)
-	AddCustom("HUMBLE_FLYER")
-	AddCustom("HONEYBACK_HIVE",	Z.STORMSONG_VALLEY)
+	self:addLookupList(DB, 29, L["ZA_RANDOM"], BZ["Zul'Aman"], 0, 0)
+	self:addLookupList(DB, 30, L["SCHOLO_BOOK_SPAWN"], BZ["Scholomance"], 0, 0)
+	self:addLookupList(DB, 31, L["STRATH_BS_PLANS"], BZ["Stratholme"], 0, 0)
+	self:addLookupList(DB, 32, L["DM_TRIBUTE"], BZ["Dire Maul"], 59.04, 48.82)
 
-	self.InitCustom = nil
+	self:addLookupList(DB, 34, L["BT_RANDOM"], BZ["Black Temple"], 0, 0)
+	self:addLookupList(DB, 35, L["Custom35"])
+	self:addLookupList(DB, 36, L["Custom36"])
+
+	self:addLookupList(DB, 37, L["SSC_RANDOM"], BZ["Serpentshrine Cavern"], 0, 0)
+	self:addLookupList(DB, 38, L["DAILY_COOKING_DAL"], BZ["Dalaran"], 0, 0)
+	self:addLookupList(DB, 39, L["ULDUAR_RANDOM"], BZ["Ulduar"], 0, 0)
+	self:addLookupList(DB, 40, L["DISCOVERY_INSC_BOOK"])
+	self:addLookupList(DB, 41, L["Custom41"])
+	self:addLookupList(DB, 42, L["TOC25_RANDOM"])
+	self:addLookupList(DB, 43, L["TK_RANDOM"], BZ["The Eye"], 0, 0)
+	self:addLookupList(DB, 44, L["Custom44"])
+	self:addLookupList(DB, 45, L["Custom45"])
+
+--self:addLookupList(DB, 28, L["BT_HYJAL_RANDOM"])
+--[[
+L["Custom35"] = "Drops from dragons in Ogri'la and Blade's Edge Mountains Summon Bosses"
+L["Custom36"] = "From a NPC in Dalaran sewers after doing The Taste Test" -- Update
+L["Custom38"] = "Randomly obtained by completing the cooking daily quest in Dalaran."
+L["Custom41"] = "Removed from the game when Naxx 40 was taken out."
+]]--
 end
 

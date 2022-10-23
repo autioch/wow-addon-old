@@ -1,30 +1,33 @@
--- ----------------------------------------------------------------------------
--- Upvalued Lua API
--- ----------------------------------------------------------------------------
--- Functions
-local pairs = _G.pairs
-local type = _G.type
-local tonumber = _G.tonumber
+--[[
+************************************************************************
+Config.lua
+Ace3 Configuration options for ARL
+************************************************************************
+File date: 2010-08-16T15:42:35Z
+File hash: b36711a
+Project hash: fc58e9f
+Project version: v2.01-14-gfc58e9f
+************************************************************************
+Please see http://www.wowace.com/addons/arl/ for more information.
+************************************************************************
+This source code is released under All Rights Reserved.
+************************************************************************
+]]--
 
--- Libraries
-local table = _G.table
+local MODNAME		= "Ackis Recipe List"
+local addon		= LibStub("AceAddon-3.0"):GetAddon(MODNAME)
 
--- ----------------------------------------------------------------------------
--- AddOn namespace.
--- ----------------------------------------------------------------------------
-local FOLDER_NAME, private = ...
+local BFAC		= LibStub("LibBabble-Faction-3.0"):GetLookupTable()
+local LC		= LOCALIZED_CLASS_NAMES_MALE
+local L			= LibStub("AceLocale-3.0"):GetLocale(MODNAME)
 
-local LibStub = _G.LibStub
+local AceConfig 	= LibStub("AceConfig-3.0")
+local AceConfigReg 	= LibStub("AceConfigRegistry-3.0")
+local AceConfigDialog 	= LibStub("AceConfigDialog-3.0")
 
-local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
-local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
+-- Set up the private intra-file namespace.
+local private	= select(2, ...)
 
-local AceConfigReg = LibStub("AceConfigRegistry-3.0")
-local AceConfigDialog = LibStub("AceConfigDialog-3.0")
-
--- ----------------------------------------------------------------------------
--- Constants
--- ----------------------------------------------------------------------------
 local modularOptions = {}
 
 local function giveProfiles()
@@ -54,156 +57,134 @@ local function fullOptions()
 	if not options then
 		options = {
 			type = "group",
-			name = private.addon_name,
+			name = MODNAME,
 			args = {
 				general = {
-					order = 1,
-					type = "group",
-					name = L["Main Options"],
-					desc = L["MAIN_OPTIONS_DESC"],
-					args = {
+					order	= 1,
+					type	= "group",
+					name	= L["Main Options"],
+					desc	= L["MAIN_OPTIONS_DESC"],
+					args	= {
 						version = {
-							order = 11,
-							type = "description",
-							name = _G.GAME_VERSION_LABEL .. ": " .. addon.version .. "\n",
+							order	= 11,
+							type	= "description",
+							name	= _G.GAME_VERSION_LABEL .. ": " .. addon.version .. "\n",
 						},
 						spacer1 = {
-							order = 12,
-							type = "description",
-							name = "\n",
+							order	= 12,
+							type	= "description",
+							name	= "\n",
 						},
 						header1 = {
-							order = 15,
-							type = "header",
-							name = L["Main Filter Options"],
+							order	= 15,
+							type	= "header",
+							name	= L["Main Filter Options"],
 						},
 						mainfilter_desc = {
-							order = 20,
-							type = "description",
-							name = L["MAINFILTER_OPTIONS_DESC"] .. "\n",
+							order	= 20,
+							type	= "description",
+							name	= L["MAINFILTER_OPTIONS_DESC"] .. "\n",
 						},
 						includefiltered = {
-							order = 25,
-							type = "toggle",
-							name = L["Include Filtered"],
-							desc = L["FILTERCOUNT_DESC"],
-							get = function()
-								return addon.db.profile.includefiltered
-							end,
-							set = function()
-								addon.db.profile.includefiltered = not addon.db.profile.includefiltered
-
-								if addon.Frame and addon.Frame:IsVisible() then
-									addon:Scan(false, false)
-								end
-							end,
+							order	= 25,
+							type	= "toggle",
+							name	= L["Include Filtered"],
+							desc	= L["FILTERCOUNT_DESC"],
+							get	= function() return addon.db.profile.includefiltered end,
+							set	= function() addon.db.profile.includefiltered = not addon.db.profile.includefiltered end,
 						},
 						includeexcluded = {
-							order = 30,
-							type = "toggle",
-							name = L["Include Excluded"],
-							desc = L["EXCLUDECOUNT_DESC"],
-							get = function()
-								return addon.db.profile.includeexcluded
-							end,
-							set = function()
-								addon.db.profile.includeexcluded = not addon.db.profile.includeexcluded
-
-								if addon.Frame and addon.Frame:IsVisible() then
-									addon:Scan(false, false)
-								end
-							end,
+							order	= 30,
+							type	= "toggle",
+							name	= L["Include Excluded"],
+							desc	= L["EXCLUDECOUNT_DESC"],
+							get	= function() return addon.db.profile.includeexcluded end,
+							set	= function() addon.db.profile.includeexcluded = not addon.db.profile.includeexcluded end,
 						},
 						exclusionlist = {
-							order = 35,
-							type = "execute",
-							name = L["View Exclusion List"],
-							desc = L["VIEW_EXCLUSION_LIST_DESC"],
-							func = function(info)
-								local exclusion_list = addon.db.profile.exclusionlist
+							order	= 35,
+							type	= "execute",
+							name	= L["View Exclusion List"],
+							desc	= L["VIEW_EXCLUSION_LIST_DESC"],
+							func	= function(info)
+									  local exclusion_list = addon.db.profile.exclusionlist
 
-								for spell_id in pairs(exclusion_list) do
-									local spell_name = _G.GetSpellInfo(spell_id)
-
-									if spell_name then
-										addon:Printf("%d: %s", spell_id, spell_name)
-									else
-										addon:Printf("%d: **spell not found** Removing from exclusion list.", spell_id)
-										exclusion_list[spell_id] = nil
-									end
-								end
-							end,
+									  for i in pairs(exclusion_list) do
+										  addon:Print(i .. ": " .. GetSpellInfo(i))
+									  end
+								  end,
 							disabled = function(info)
-								for spell_id in pairs(addon.db.profile.exclusionlist) do
-									return false
-								end
-								return true
-							end,
+									   for spell_id in pairs(addon.db.profile.exclusionlist) do
+										   return false
+									   end
+									   return true
+								   end,
 						},
 						clearexclusionlist = {
-							order = 40,
-							type = "execute",
-							name = L["Clear Exclusion List"],
-							desc = L["CLEAR_EXCLUSION_LIST_DESC"],
-							func = function(info)
-								local exclusion_list = addon.db.profile.exclusionlist
+							order	= 40,
+							type	= "execute",
+							name	= L["Clear Exclusion List"],
+							desc	= L["CLEAR_EXCLUSION_LIST_DESC"],
+							func	= function(info)
+									  local exclusion_list = addon.db.profile.exclusionlist
 
-								exclusion_list = table.wipe(exclusion_list)
+									  exclusion_list = table.wipe(exclusion_list)
 
-								if addon.Frame:IsVisible() then
-									addon:Scan()
-								end
-							end,
+									  if addon.Frame:IsVisible() then
+										  addon:Scan()
+									  end
+								  end,
 							disabled = function(info)
-								for spell_id in pairs(addon.db.profile.exclusionlist) do
-									return false
-								end
-								return true
-							end,
+									   for spell_id in pairs(addon.db.profile.exclusionlist) do
+										   return false
+									   end
+									   return true
+								   end,
 						},
 						spacer1 = {
-							order = 45,
-							type = "description",
-							name = "\n",
+							order	= 45,
+							type	= "description",
+							name	= "\n",
 						},
 						header2 = {
-							order = 51,
-							type = "header",
-							name = L["Text Dump Options"],
+							order	= 51,
+							type	= "header",
+							name	= L["Text Dump Options"],
 						},
-						text_dump_desc = {
-							order = 52,
-							type = "description",
-							name = L["TEXTDUMP_OPTIONS_DESC"] .. "\n",
+						text_dump_desc =	{
+							order	= 52,
+							type	= "description",
+							name	= L["TEXTDUMP_OPTIONS_DESC"] .. "\n",
 						},
 						textdump = {
-							order = 53,
-							type = "select",
-							name = L["Text Dump"],
-							desc = L["TEXT_DUMP_DESC"],
-							get = function()
-								return addon.db.profile.textdumpformat
-							end,
-							set = function(info, name)
-								addon.db.profile.textdumpformat = name
-							end,
-							values = function()
-								return {
-									Name = _G.NAME,
-									Comma = L["CSV"],
-									BBCode = L["BBCode"],
-									XML = L["XML"],
-								}
-							end,
+							order	= 53,
+							type	= "select",
+							name	= L["Text Dump"],
+							desc	= L["TEXT_DUMP_DESC"],
+							get	= function()
+									  return addon.db.profile.textdumpformat
+								  end,
+							set	= function(info, name)
+									  addon.db.profile.textdumpformat = name
+								  end,
+							values	= function()
+									  return {
+										  Name = _G.NAME,
+										  Comma = L["CSV"],
+										  BBCode = L["BBCode"],
+										  XML = L["XML"],
+									  }
+								  end,
 						},
 					},
 				},
 			},
 		}
 
-		for k, v in pairs(modularOptions) do
-			options.args[k] = (type(v) == "function") and v() or v
+		for k,v in pairs(modularOptions) do
+		 	options.args[k] = (type(v) == "function") and v() or v
 		end
+
 	end
 	return options
 end
@@ -211,7 +192,7 @@ end
 local arlmap
 
 local function GetMapOptions()
-	local has_waypoints = _G.TomTom
+	local has_waypoints = _G.TomTom or _G.Cartographer_Waypoints or false
 
 	if not arlmap then
 		arlmap = {
@@ -228,7 +209,7 @@ local function GetMapOptions()
 					order	= 2,
 					type	= "toggle",
 					name	= L["Trainer"],
-					desc	= L["WAYPOINT_TOGGLE_FORMAT"]:format(L["Trainer"]),
+					desc	= string.format(L["WAYPOINT_TOGGLE_FORMAT"], L["Trainer"]),
 					disabled = not has_waypoints,
 					get	= function()
 							  return addon.db.profile.maptrainer
@@ -241,7 +222,7 @@ local function GetMapOptions()
 					order	= 3,
 					type	= "toggle",
 					name	= L["Vendor"],
-					desc	= L["WAYPOINT_TOGGLE_FORMAT"]:format(L["Vendor"]),
+					desc	= string.format(L["WAYPOINT_TOGGLE_FORMAT"], L["Vendor"]),
 					disabled = not has_waypoints,
 					get	= function()
 							  return addon.db.profile.mapvendor
@@ -254,7 +235,7 @@ local function GetMapOptions()
 					order	= 4,
 					type	= "toggle",
 					name	= L["Mob Drop"],
-					desc	= L["WAYPOINT_TOGGLE_FORMAT"]:format(L["Mob Drop"]),
+					desc	= string.format(L["WAYPOINT_TOGGLE_FORMAT"], L["Mob Drop"]),
 					disabled = not has_waypoints,
 					get	= function()
 							  return addon.db.profile.mapmob
@@ -267,7 +248,7 @@ local function GetMapOptions()
 					order	= 5,
 					type	= "toggle",
 					name	= L["Quest"],
-					desc	= L["WAYPOINT_TOGGLE_FORMAT"]:format(L["Quest"]),
+					desc	= string.format(L["WAYPOINT_TOGGLE_FORMAT"], L["Quest"]),
 					disabled = not has_waypoints,
 					get	= function()
 							  return addon.db.profile.mapquest
@@ -300,7 +281,7 @@ local function GetMapOptions()
 					type	= "toggle",
 					width	= "full",
 					name	= _G.WORLD_MAP,
-					desc	= L["WAYPOINT_MAP_FORMAT"]:format(_G.WORLD_MAP),
+					desc	= string.format(L["WAYPOINT_MAP_FORMAT"], _G.WORLD_MAP),
 					disabled = not has_waypoints,
 					get	= function()
 							  return addon.db.profile.worldmap
@@ -314,7 +295,7 @@ local function GetMapOptions()
 					type	= "toggle",
 					width	= "full",
 					name	= _G.MINIMAP_LABEL,
-					desc	= L["WAYPOINT_MAP_FORMAT"]:format(_G.MINIMAP_LABEL),
+					desc	= string.format(L["WAYPOINT_MAP_FORMAT"], _G.MINIMAP_LABEL),
 					disabled = not has_waypoints,
 					get	= function()
 							  return addon.db.profile.minimap
@@ -359,12 +340,53 @@ local function GetDatamineOptions()
 					type	= "description",
 					name	= L["DATAMINE_WARNING_DESC"] .. "\n",
 				},
+				generatelinks = {
+					width	= "double",
+					order	= 10,
+					type	= "execute",
+					name	= L["Generate Tradeskill Links"],
+					desc	= L["GENERATE_LINKS_DESC"],
+					func	= function() addon:GenerateLinks() end,
+				},
+				scantrainerskills = {
+					width	= "double",
+					order	= 20,
+					type	= "execute",
+					name	= L["Compare Trainer Skills"],
+					desc	= L["COMPARE_TRAINER_SKILL_DESC"],
+					func	= function() addon:ScanSkillLevelData() end,
+				},
+				scantraineracquire = {
+					width	= "double",
+					order	= 30,
+					type	= "execute",
+					name	= L["Compare Trainer Acquire"],
+					desc	= L["COMPARE_TRAINER_ACQUIRE_DESC"],
+					func	= function() addon:ScanTrainerData() end,
+				},
+				null = {
+					order	= 31,
+					type	= "description",
+					name	= "",
+				},
 				scanentiredatabase = {
 					order	= 40,
 					type	= "execute",
 					name	= L["Scan Entire Database"],
 					desc	= L["SCAN_ENTIRE_DB_DESC"],
 					func	= function() addon:TooltipScanDatabase() end,
+				},
+				scanvendor = {
+					order	= 50,
+					type	= "execute",
+					name	= L["Scan Vendor"],
+					desc	= L["SCAN_VENDOR_DESC"],
+					func	= function() addon:ScanVendor() end,
+				},
+				null1 = {
+					order	= 51,
+					type	= "description",
+					name	= "",
 				},
 				scanprofessiontooltip = {
 					order	= 60,
@@ -380,7 +402,7 @@ local function GetDatamineOptions()
 					name = L["Scan A Spell ID"],
 					desc = L["SCAN_SPELL_ID_DESC"],
 					get = false,
-					set = function(info, v) addon:ScanTooltipRecipe(tonumber(v), false, false) end,
+					set = function(info, v) addon:TooltipScanRecipe(tonumber(v),false,false) end,
 				},
 				null2 = {
 					order	= 80,
@@ -526,9 +548,9 @@ local function GetDisplayOptions()
 			type		= "group",
 			childGroups	= "tab",
 			args = {
-				-- ----------------------------------------------------------------------------
+				-------------------------------------------------------------------------------
 				-- Main interface options.
-				-- ----------------------------------------------------------------------------
+				-------------------------------------------------------------------------------
 				interface_tab = {
 					order	= 10,
 					name	= _G.INTERFACE_OPTIONS,
@@ -568,10 +590,6 @@ local function GetDisplayOptions()
 								  end,
 							set	= function(info, v)
 									  addon.db.profile.frameopts.uiscale = v
-
-									  if private.InitializeFrame then
-										  private.InitializeFrame()
-									  end
 									  addon.Frame:SetScale(v)
 								  end,
 						},
@@ -586,10 +604,6 @@ local function GetDisplayOptions()
 								  end,
 							set	= function(info, value)
 									  addon.db.profile.frameopts.small_list_font = value
-
-									  if private.InitializeFrame then
-										  private.InitializeFrame()
-									  end
 
 									  if addon.Frame:IsVisible() then
 										  addon:Scan()
@@ -632,9 +646,9 @@ local function GetDisplayOptions()
 						},
 					},
 				},
-				-- ----------------------------------------------------------------------------
+				-------------------------------------------------------------------------------
 				-- Tooltip options
-				-- ----------------------------------------------------------------------------
+				-------------------------------------------------------------------------------
 				tooltip_tab = {
 					order	= 20,
 					name	= L["Tooltip Options"],
@@ -707,7 +721,7 @@ local function GetDisplayOptions()
 							get	= function()
 									  return addon.db.profile.spelltooltiplocation
 								  end,
-							set	= function(info, name)
+							set	= function(info,name)
 									  addon.db.profile.spelltooltiplocation = name
 								  end,
 							values	= function()
@@ -777,30 +791,22 @@ local function GetDisplayOptions()
 end
 
 function addon:SetupOptions()
-	AceConfigReg:RegisterOptionsTable(private.addon_name, fullOptions)
-	self.optionsFrame = AceConfigDialog:AddToBlizOptions(private.addon_name, nil, nil, "general")
+	AceConfigReg:RegisterOptionsTable(MODNAME, fullOptions)
+	self.optionsFrame = AceConfigDialog:AddToBlizOptions(MODNAME, nil, nil, "general")
 
 	-- Register the module options
 	self:RegisterModuleOptions("Display", GetDisplayOptions(), _G.DISPLAY_OPTIONS)
 
-	if _G.TomTom then
+	if _G.TomTom or _G.Cartographer_Waypoints then
 		self:RegisterModuleOptions("Waypoint", GetMapOptions(), L["Waypoints"])
 	end
-
-	if addon.version == "Devel" then
-		self:RegisterModuleOptions("Datamining", GetDatamineOptions(), L["Datamine Options"])
-	else
-		addon.db.profile.scantrainers = false
-		addon.db.profile.scanvendors = false
-		addon.db.profile.autoloaddb = false
-
-	end
+	self:RegisterModuleOptions("Datamining", GetDatamineOptions(), L["Datamine Options"])
 	self:RegisterModuleOptions("Documentation", GetDocumentation(), L["Documentation"])
 	self:RegisterModuleOptions("Profiles", giveProfiles(), L["Profile Options"])
 
 	-- Add in the about panel to the Bliz options (not a part of the ace3 config)
 	if LibStub:GetLibrary("LibAboutPanel", true) then
-		self.optionsFrame["About"] = LibStub:GetLibrary("LibAboutPanel").new(private.addon_name, private.addon_name)
+		self.optionsFrame["About"] = LibStub:GetLibrary("LibAboutPanel").new(MODNAME, MODNAME)
 	else
 		self:Print("Lib AboutPanel not loaded.")
 	end
@@ -816,5 +822,5 @@ end
 
 function addon:RegisterModuleOptions(name, optionsTable, displayName)
 	modularOptions[name] = optionsTable
-	self.optionsFrame[name] = AceConfigDialog:AddToBlizOptions(private.addon_name, displayName, private.addon_name, name)
+	self.optionsFrame[name] = AceConfigDialog:AddToBlizOptions(MODNAME, displayName, MODNAME, name)
 end
