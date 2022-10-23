@@ -41,7 +41,7 @@ function lib.OnLeave(event, cell, arg)
 	highlighter:Hide()
 end
 
-function lib.OnMouseDown(event, cell, arg, button) PlaySound("igMainMenuOpen") end
+function lib.OnMouseDown(event, cell, arg, button)  end
 function lib.OnMouseUp(event, cell, arg, button)  end
 
 local function Cell_OnEnter(cell) cell.callbacks:Fire("OnEnter", cell, cell.arg) end

@@ -907,36 +907,35 @@ function GearScore_DisplayUnit(Name, Auto)
 end
 
 function GearScore_ShowOptions()
-	-- GS_OptionalDisplayed = 	GS_Displayed
-	-- GS_Displayed = nil
-	-- if ( GS_Settings["Restrict"] == 1 ) then GS_None:SetChecked(true); GS_Light:SetChecked(false); GS_Heavy:SetChecked(false); end
-	-- if ( GS_Settings["Restrict"] == 2 ) then GS_Light:SetChecked(true); GS_None:SetChecked(false); GS_Heavy:SetChecked(false);end
-	-- if ( GS_Settings["Restrict"] == 3 ) then GS_Heavy:SetChecked(true); GS_Light:SetChecked(false); GS_None:SetChecked(false);end
-	-- if ( GS_Settings["Player"] == 1 ) then GS_ShowPlayerCheck:SetChecked(true); else GS_ShowPlayerCheck:SetChecked(false); end
-	-- if ( GS_Settings["Item"] == 1 ) then GS_ShowItemCheck:SetChecked(true); else GS_ShowItemCheck:SetChecked(false); end
-	-- if ( GS_Settings["Detail"] == 1 ) then GS_DetailCheck:SetChecked(true); else GS_DetailCheck:SetChecked(false); end
-	-- if ( GS_Settings["Level"] == 1 ) then GS_LevelCheck:SetChecked(true); else GS_LevelCheck:SetChecked(false); end
-	-- if ( GS_Settings["Date2"] == 1 ) then GS_DateCheck:SetChecked(true); else GS_DateCheck:SetChecked(false); end
-	-- if ( GS_Settings["AutoPrune"] == 1 ) then GS_PruneCheck:SetChecked(true); else GS_PruneCheck:SetChecked(false); end	
-	-- if ( GS_Settings["ShowHelp"] == 1 ) then GS_HelpCheck:SetChecked(true); else GS_HelpCheck:SetChecked(false); end
-	-- if ( GS_Settings["KeepFaction"] == 1 ) then GS_FactionCheck:SetChecked(true); else GS_FactionCheck:SetChecked(false); end
-	-- if ( GS_Settings["ML"] == 1 ) then GS_MasterlootCheck:SetChecked(true); else GS_MasterlootCheck:SetChecked(false); end
-	-- if ( GS_Settings["CHAT"] == 1 ) then GS_ChatCheck:SetChecked(true); else GS_ChatCheck:SetChecked(false); end
-	-- GS_DatabaseAgeSliderText:SetText("Keep data for: "..(GS_Settings["DatabaseAgeSlider"] or 30).." days.")
-	-- GS_DatabaseAgeSlider:SetValue(GS_Settings["DatabaseAgeSlider"] or 30)
-	-- GS_LevelEditBox:SetText(GS_Settings["MinLevel"])
-	-- --Set SpecScore Options--
-	-- local class, englishClass = UnitClass("player")
-	-- for i = 1,4 do _G["GS_SpecFontString"..i]:Hide(); _G["GS_SpecScoreCheck"..i]:Hide(); end
-    -- for i, v in ipairs(GearScoreClassSpecList[englishClass]) do
-    -- _G["GS_SpecFontString"..i]:SetText("Show "..GearScoreClassSpecList[englishClass][i].." SpecScores")
-   	-- 	_G["GS_SpecScoreCheck"..i]:SetText(GearScoreClassSpecList[englishClass][i])
-   	-- 	_G["GS_SpecFontString"..i]:Show(); _G["GS_SpecScoreCheck"..i]:Show()
-    -- 	if not ( GS_Settings["ShowSpecScores"] ) then GS_Settings["ShowSpecScores"] = {}; end
-    -- 	if not ( GS_Settings["ShowSpecScores"][GearScoreClassSpecList[englishClass][i]] ) then GS_Settings["ShowSpecScores"][GearScoreClassSpecList[englishClass][i]] = 1; end
-    -- 	if ( GS_Settings["ShowSpecScores"][GearScoreClassSpecList[englishClass][i]] == 1 ) then _G["GS_SpecScoreCheck"..i]:SetChecked(1); else _G["GS_SpecScoreCheck"..i]:SetChecked(0); end
-    -- end
-	print("dupa");
+	GS_OptionalDisplayed = 	GS_Displayed
+	GS_Displayed = nil
+	if ( GS_Settings["Restrict"] == 1 ) then GS_None:SetChecked(true); GS_Light:SetChecked(false); GS_Heavy:SetChecked(false); end
+	if ( GS_Settings["Restrict"] == 2 ) then GS_Light:SetChecked(true); GS_None:SetChecked(false); GS_Heavy:SetChecked(false);end
+	if ( GS_Settings["Restrict"] == 3 ) then GS_Heavy:SetChecked(true); GS_Light:SetChecked(false); GS_None:SetChecked(false);end
+	if ( GS_Settings["Player"] == 1 ) then GS_ShowPlayerCheck:SetChecked(true); else GS_ShowPlayerCheck:SetChecked(false); end
+	if ( GS_Settings["Item"] == 1 ) then GS_ShowItemCheck:SetChecked(true); else GS_ShowItemCheck:SetChecked(false); end
+	if ( GS_Settings["Detail"] == 1 ) then GS_DetailCheck:SetChecked(true); else GS_DetailCheck:SetChecked(false); end
+	if ( GS_Settings["Level"] == 1 ) then GS_LevelCheck:SetChecked(true); else GS_LevelCheck:SetChecked(false); end
+	if ( GS_Settings["Date2"] == 1 ) then GS_DateCheck:SetChecked(true); else GS_DateCheck:SetChecked(false); end
+	if ( GS_Settings["AutoPrune"] == 1 ) then GS_PruneCheck:SetChecked(true); else GS_PruneCheck:SetChecked(false); end	
+	if ( GS_Settings["ShowHelp"] == 1 ) then GS_HelpCheck:SetChecked(true); else GS_HelpCheck:SetChecked(false); end
+	if ( GS_Settings["KeepFaction"] == 1 ) then GS_FactionCheck:SetChecked(true); else GS_FactionCheck:SetChecked(false); end
+	if ( GS_Settings["ML"] == 1 ) then GS_MasterlootCheck:SetChecked(true); else GS_MasterlootCheck:SetChecked(false); end
+	if ( GS_Settings["CHAT"] == 1 ) then GS_ChatCheck:SetChecked(true); else GS_ChatCheck:SetChecked(false); end
+	GS_DatabaseAgeSliderText:SetText("Keep data for: "..(GS_Settings["DatabaseAgeSlider"] or 30).." days.")
+	GS_DatabaseAgeSlider:SetValue(GS_Settings["DatabaseAgeSlider"] or 30)
+	GS_LevelEditBox:SetText(GS_Settings["MinLevel"])
+	--Set SpecScore Options--
+	local class, englishClass = UnitClass("player")
+	for i = 1,4 do _G["GS_SpecFontString"..i]:Hide(); _G["GS_SpecScoreCheck"..i]:Hide(); end
+    for i, v in ipairs(GearScoreClassSpecList[englishClass]) do
+    _G["GS_SpecFontString"..i]:SetText("Show "..GearScoreClassSpecList[englishClass][i].." SpecScores")
+   		_G["GS_SpecScoreCheck"..i]:SetText(GearScoreClassSpecList[englishClass][i])
+   		_G["GS_SpecFontString"..i]:Show(); _G["GS_SpecScoreCheck"..i]:Show()
+    	if not ( GS_Settings["ShowSpecScores"] ) then GS_Settings["ShowSpecScores"] = {}; end
+    	if not ( GS_Settings["ShowSpecScores"][GearScoreClassSpecList[englishClass][i]] ) then GS_Settings["ShowSpecScores"][GearScoreClassSpecList[englishClass][i]] = 1; end
+    	if ( GS_Settings["ShowSpecScores"][GearScoreClassSpecList[englishClass][i]] == 1 ) then _G["GS_SpecScoreCheck"..i]:SetChecked(1); else _G["GS_SpecScoreCheck"..i]:SetChecked(0); end
+    end
 	GS_Displayed = 1; GS_OptionsFrame:Show(); GS_GearFrame:Hide(); GS_ExPFrame:Hide()
 end 
  

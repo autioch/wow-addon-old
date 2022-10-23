@@ -1,0 +1,12 @@
+{
+    "name": "qb-wp-lists",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "watch": "node ./tools/watch"
+    },
+    "devDependencies": {
+        "cpx": "^1.5.0",
+        "qb-log": "^1.0.0"
+    }
+}
